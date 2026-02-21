@@ -121,7 +121,6 @@ export default function Register() {
           </button>
         </div>
 
-        {/* Confirm Password */}
         <div className="relative">
           <input
             name="confirmPassword"

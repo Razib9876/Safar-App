@@ -72,7 +72,7 @@ const AuthProvider = ({ children }) => {
             headers: { Authorization: `Bearer ${token}` },
           });
 
-          setUser(res.data.data); // data must contain { role: "admin|driver|rider" }
+          setUser(res.data.data);
         } else {
           setUser(null);
           localStorage.removeItem("firebaseToken");
