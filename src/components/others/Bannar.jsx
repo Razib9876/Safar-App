@@ -3,7 +3,7 @@ import Navbar from "../Layout/Navbar";
 import BookingForm from "../forms/BookingBannarForm";
 
 import bannarImageOne from "../../assets/BannarImg/bannarImageOne.jpg";
-import bannarImageTwo from "../../assets/BannarImg/bannarImageTwo.jpg";
+import bannarImageTwo from "../../assets/BannarImg/sunset-road-trip.jpg";
 import bannarImageThree from "../../assets/BannarImg/bannarImageThree.jpg";
 
 const Bannar = () => {
