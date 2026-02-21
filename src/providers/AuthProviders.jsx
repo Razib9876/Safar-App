@@ -1,10 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
+import { onIdTokenChanged } from "firebase/auth";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithPopup,
-  onAuthStateChanged,
   signOut,
   updateProfile,
   GoogleAuthProvider,
@@ -51,23 +51,22 @@ const AuthProvider = ({ children }) => {
   };
 
   /* Auth listener */
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
       setLoading(true);
       try {
         if (currentUser?.email) {
-          const token = await currentUser.getIdToken(true);
+          const token = await currentUser.getIdToken(true); // force refresh
           localStorage.setItem("firebaseToken", token);
 
-          /* Sync MongoDB user */
+          // Sync MongoDB user
           await axios.get(
             `${API}/users/by-email/${encodeURIComponent(currentUser.email)}?create=true`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
+            { headers: { Authorization: `Bearer ${token}` } },
           );
 
-          /* Fetch user profile with role */
+          // Fetch user profile
           const res = await axios.get(`${API}/users/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -80,6 +79,7 @@ const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error("Auth sync error:", err.response?.data || err.message);
         setUser(null);
+        localStorage.removeItem("firebaseToken");
       } finally {
         setLoading(false);
       }
