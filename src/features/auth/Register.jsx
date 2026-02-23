@@ -60,7 +60,7 @@ export default function Register() {
     try {
       setLoading(true);
       await register(email, password, name);
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       console.error(err);
       setError("Registration failed. Try again.");
