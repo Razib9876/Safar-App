@@ -39,7 +39,6 @@ axiosSecure.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  console.log("🚀 Interceptor Token:", token);
   return config;
 });
 
@@ -48,8 +47,6 @@ axiosSecure.interceptors.response.use(
   (res) => res,
   async (err) => {
     if (err.response?.status === 401 || err.response?.status === 403) {
-      console.log("❌ Unauthorized → logging out");
-
       localStorage.removeItem("firebaseToken");
       window.location.replace("/auth/login");
     }
