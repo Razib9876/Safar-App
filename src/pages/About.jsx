@@ -74,14 +74,12 @@ function About() {
             </div>
           </div>
 
-          {/* PLAN TRIP SECTION */}
           <div className="mt-20">
             <PlanTrip />
           </div>
         </div>
       </section>
 
-      {/* BOOK BANNER SECTION */}
       <div className="relative w-full bg-gray-900 py-16">
         <div className="absolute inset-0 bg-black/60"></div>
 

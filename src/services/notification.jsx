@@ -1,11 +1,7 @@
-// services/notification.jsx
 
 import { toast } from "react-hot-toast";
 
-/**
- * Centralized notification service
- * Keeps UI notifications consistent across the app
- */
+
 export const notify = {
   success: (message, options = {}) =>
     toast.success(message, {

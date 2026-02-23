@@ -234,7 +234,7 @@ import {
   FacebookAuthProvider,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
-import axios from "axios";
+import axiosSecure from "../utils/axiosSecure";
 
 export const AuthContext = createContext(null);
 
@@ -242,77 +242,58 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
-// Base API URL from Vite env
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  /* Register */
   const register = async (email, password, name) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     if (name) await updateProfile(result.user, { displayName: name });
     return result;
   };
 
-  /* Email login */
   const login = (email, password) =>
     signInWithEmailAndPassword(auth, email, password);
 
-  /* Social login */
   const googleLogin = () => signInWithPopup(auth, googleProvider);
   const facebookLogin = () => signInWithPopup(auth, facebookProvider);
 
-  /* Logout */
   const logOut = async () => {
-    try {
-      await signOut(auth);
-      localStorage.removeItem("firebaseToken");
-      setUser(null);
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
+    await signOut(auth);
+    localStorage.removeItem("firebaseToken");
+    setUser(null);
   };
 
-  /* Auth listener */
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
       setLoading(true);
+
+      if (!currentUser) {
+        setUser(null);
+        localStorage.removeItem("firebaseToken");
+        setLoading(false);
+        return;
+      }
+
       try {
-        if (currentUser?.email) {
-          // Get fresh token
-          const token = await currentUser.getIdToken(true);
+        // 🔥 Get fresh token
+        const token = await currentUser.getIdToken(true);
+        localStorage.setItem("firebaseToken", token);
 
-          console.log("Firebase token:", token); // ✅ Debug token
+        console.log("🔥 Saved Firebase Token:", token);
 
-          localStorage.setItem("firebaseToken", token);
+        // 🔐 Sync user
+        await axiosSecure.get(
+          `/users/by-email/${encodeURIComponent(currentUser.email)}?create=true`,
+        );
 
-          // Sync user in backend (create if not exists)
-          const syncRes = await axios.get(
-            `${API}/users/by-email/${encodeURIComponent(currentUser.email)}?create=true`,
-            { headers: { Authorization: `Bearer ${token}` } },
-          );
-          console.log("Sync user response:", syncRes.data);
+        // 👤 Get profile
+        const profileRes = await axiosSecure.get("/users/me");
 
-          // Fetch user profile
-          const profileRes = await axios.get(`${API}/users/me`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          console.log("User profile fetched:", profileRes.data);
-
-          setUser(profileRes.data.data);
-        } else {
-          setUser(null);
-          localStorage.removeItem("firebaseToken");
-        }
+        setUser(profileRes.data.data);
       } catch (err) {
         console.error("Auth sync error:", err.response?.data || err.message);
-
-        // If 401 Unauthorized, remove token
-        if (err.response?.status === 401) {
-          localStorage.removeItem("firebaseToken");
-        }
+        localStorage.removeItem("firebaseToken");
         setUser(null);
       } finally {
         setLoading(false);

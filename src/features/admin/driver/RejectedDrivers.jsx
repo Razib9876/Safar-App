@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { FiMoreVertical, FiCheckCircle } from "react-icons/fi";
-import axiosSecure from "../../../services/axiosSecure"; // your secure axios instance
+import axiosSecure from "../../../services/axiosSecure"; 
 
 // ================= FETCH REJECTED DRIVERS =================
 const fetchRejectedDrivers = async () => {
