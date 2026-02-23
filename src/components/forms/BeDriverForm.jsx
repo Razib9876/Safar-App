@@ -190,7 +190,7 @@ export default function BeDriverForm() {
 
   /* ================= UI ================= */
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-6">
       {/* STEP INDICATOR */}
       <div className="flex justify-between gap-10">
         {["Terms", "Driver Info", "Vehicle Info"].map((label, i) => (
