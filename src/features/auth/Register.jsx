@@ -17,18 +17,15 @@ export default function Register() {
 
   // Strong password check
   const validateStrongPassword = (password) => {
-    const strongRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()[\]{}\-_=+|;:'",.<>/\\]).{8,}$/;
+    const regex = /^.{6,}$/; // at least 6 characters
 
     if (!password) {
       setPasswordAlert("");
       return false;
     }
 
-    if (!strongRegex.test(password)) {
-      setPasswordAlert(
-        "Password must be at least 8 characters and include uppercase, lowercase, number, and special character.",
-      );
+    if (!regex.test(password)) {
+      setPasswordAlert("Password must be at least 6 characters.");
       return false;
     }
 
