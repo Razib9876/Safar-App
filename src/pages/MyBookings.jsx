@@ -153,8 +153,6 @@ export default function MyBookings() {
     <>
       <HeroPages name="My Bookings" />
       <div className="pt-10 pr-10 pl-10">
-        <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
-
         {/* ================= DESKTOP TABLE ================= */}
         <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
           <table className="min-w-full text-sm">
