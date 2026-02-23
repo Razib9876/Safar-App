@@ -234,7 +234,7 @@ import {
   FacebookAuthProvider,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
-import axiosSecure from "../utils/axiosSecure";
+import axiosSecure from "../services/axiosSecure";
 
 export const AuthContext = createContext(null);
 
