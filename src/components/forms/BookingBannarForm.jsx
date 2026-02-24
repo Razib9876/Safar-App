@@ -235,7 +235,7 @@ const BookingForm = ({ driver, onClose }) => {
               <img
                 src={car.img}
                 alt={car.name}
-                className="h-20 w-20 object-contain"
+                className="h-20 w-20 object-contain bg-white"
               />
             </button>
           ))}
