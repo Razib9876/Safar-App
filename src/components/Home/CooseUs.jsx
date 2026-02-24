@@ -27,7 +27,7 @@ function ChooseUs() {
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16 max-w-7xl w-full px-6 md:px-12">
           {/* Left Column - Text */}
           <div className="flex-1 flex flex-col gap-6 py-12 md:py-16">
-            <h4 className="text-primary text-lg font-semibold">
+            <h4 className="text-primary text-lg font-semibold -mt-10 sm:mt-0">
               Why Choose Us
             </h4>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-snug">
@@ -45,7 +45,7 @@ function ChooseUs() {
 
           {/* Right Column - Boxes */}
           <>
-            <div className="flex-1 flex flex-col gap-6">
+            <div className="-mt-16 sm:mt-0 flex-1 flex flex-col gap-6">
               <a
                 href="#home"
                 className="inline-flex items-center text-primary font-medium hover:text-primary-dark transition-colors duration-300 mt-2"

@@ -53,18 +53,13 @@ const AuthProvider = ({ children }) => {
       }
 
       try {
-        // 🔥 Get fresh token
         const token = await currentUser.getIdToken(true);
         localStorage.setItem("firebaseToken", token);
 
-        console.log("🔥 Saved Firebase Token:", token);
-
-        // 🔐 Sync user
         await axiosSecure.get(
           `/users/by-email/${encodeURIComponent(currentUser.email)}?create=true`,
         );
 
-        // 👤 Get profile
         const profileRes = await axiosSecure.get("/users/me");
 
         setUser(profileRes.data.data);

@@ -48,8 +48,8 @@ export default function DashboardLayout() {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="currentColor" // uses text color, not bold
-                strokeWidth="3" // thicker line
+                stroke="currentColor"
+                strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 className="inline-block w-6 h-6 my-1.5"
@@ -70,7 +70,7 @@ export default function DashboardLayout() {
         <div className="drawer-side is-drawer-close:overflow-visible">
           <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
 
-          <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
+          <div className="flex min-h-full flex-col items-start bg-base-200 pt-20 sm:pt-0 is-drawer-close:w-14 is-drawer-open:w-64">
             <ul className="menu w-full grow">
               {/* Homepage (rider/admin/driver) */}
               {(user.role === "rider" ||

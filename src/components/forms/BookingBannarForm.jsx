@@ -220,12 +220,12 @@ const BookingForm = ({ driver, onClose }) => {
         className="bg-white rounded-t-3xl rounded-b-none md:rounded-b-3xl p-6 lg:p-10 shadow-black text-black mt-20 mb-0 m-auto"
       >
         {/* Vehicle Type */}
-        <div className="flex gap-5 -mt-20 justify-center m-auto">
+        <div className="flex gap-5 -mt-20 justify-center m-auto ">
           {carTypes.map((car) => (
             <button
               type="button"
               key={car.name}
-              className={`border-4 p-1 rounded-xl bg-gray-50 ${
+              className={`border-4 p-1 rounded-xl bg-white ${
                 watch("selectedCar") === car.name
                   ? "border-orange-500"
                   : "border-gray-300"

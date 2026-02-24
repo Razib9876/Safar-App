@@ -38,7 +38,7 @@ function Faq() {
         backgroundPosition: "0 70%",
       }}
     >
-      <div className="max-w-6xl mx-auto px-6 ">
+      <div className="-mt-44 sm:mt-0 max-w-6xl mx-auto px-6">
         {/* Title */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-gray-900">
