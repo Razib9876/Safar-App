@@ -47,7 +47,7 @@ export default function BeDriverForm() {
 
       return response.data.data.url;
     } catch (err) {
-      toast.error("Image upload failed");
+      toast.error("Image upload failed", err);
       return null;
     }
   };
@@ -67,9 +67,8 @@ export default function BeDriverForm() {
     register,
     handleSubmit,
     trigger,
-    getValues,
     setValue,
-    formState: { errors },
+    formState: { error },
   } = useForm();
 
   /* ================= STEP VALIDATION ================= */
@@ -144,12 +143,12 @@ export default function BeDriverForm() {
     }
 
     // Validate vehicle photos
-    for (let i = 0; i < vehicles.length; i++) {
-      if (!vehicles[i].mainPhoto) {
-        toast.error(`Please upload main photo for vehicle #${i + 1}`);
-        return;
-      }
-    }
+    // for (let i = 0; i < vehicles.length; i++) {
+    //   if (!vehicles[i].mainPhoto) {
+    //     toast.error(`Please upload main photo for vehicle #${i + 1}`);
+    //     return;
+    //   }
+    // }
 
     // Validate NID and License photos
     if (!data.nidFront || !data.nidBack) {
