@@ -147,8 +147,12 @@ export default function MyBookings() {
   };
 
   if (isLoading)
-    return <div className="p-6 text-center">Loading bookings...</div>;
-
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <span className="loading loading-spinner text-primary w-12"></span>
+      </div>
+    );
+  const isEmpty = !isLoading && bookings.length === 0;
   return (
     <>
       <HeroPages name="My Bookings" />
@@ -165,46 +169,105 @@ export default function MyBookings() {
                 <th className="p-3 text-right">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {bookings.map((b) => (
-                <tr key={b._id} className="border-t hover:bg-gray-50">
-                  <td className="p-3 capitalize">
-                    {b.tripType.replace("_", " ")} ({b.vehicleType})
-                  </td>
-                  <td className="p-3">
-                    {b.fromLocation} → {b.toLocation}
-                  </td>
-                  <td className="p-3">{b.status}</td>
-                  <td className="p-3">{b.paymentStatus}</td>
-                  <td className="p-3 text-right space-x-2">
-                    {canModify(b.status) && (
-                      <>
-                        <button
-                          onClick={() => cancelMutation.mutate(b._id)}
-                          className="bg-red-500 text-white px-3 py-1 rounded"
-                        >
-                          Cancel
-                        </button>
-
-                        {b.driverQuote?.length > 0 && (
-                          <button
-                            onClick={() => handleDriverResponse(b)}
-                            className="bg-blue-500 text-white px-3 py-1 rounded"
-                          >
-                            Driver Response
-                          </button>
-                        )}
-                      </>
-                    )}
+            {isEmpty ? (
+              <tbody>
+                <tr>
+                  <td colSpan="5" className="h-[50vh] text-center align-middle">
+                    <p className="text-gray-500 text-lg font-medium">
+                      No bookings found.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-2">
+                      Your booked trips will appear here.
+                    </p>
                   </td>
                 </tr>
-              ))}
-            </tbody>
+              </tbody>
+            ) : (
+              <tbody>
+                {bookings.map((b) => (
+                  <tr key={b._id} className="border-t hover:bg-gray-50">
+                    <td className="p-3 capitalize">
+                      {b.tripType.replace("_", " ")} ({b.vehicleType})
+                    </td>
+                    <td className="p-3">
+                      {b.fromLocation} → {b.toLocation}
+                    </td>
+                    <td className="p-3">{b.status}</td>
+                    <td className="p-3">{b.paymentStatus}</td>
+                    <td className="p-3 text-right space-x-2">
+                      {canModify(b.status) && (
+                        <>
+                          <button
+                            onClick={() => cancelMutation.mutate(b._id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded"
+                          >
+                            Cancel
+                          </button>
+
+                          {b.driverQuote?.length > 0 && (
+                            <button
+                              onClick={() => handleDriverResponse(b)}
+                              className="bg-blue-500 text-white px-3 py-1 rounded"
+                            >
+                              Driver Response
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
         </div>
+        {/* 
+        <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-100 text-left">
+              <tr>
+                <th className="p-3">Trip</th>
+                <th className="p-3">Route</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Payment</th>
+                <th className="p-3 text-right">Action</th>
+              </tr>
+            </thead>
 
+            {isEmpty ? (
+              <tbody>
+                <tr>
+                  <td colSpan="5" className="h-[50vh] text-center align-middle">
+                    <p className="text-gray-500 text-lg font-medium">
+                      No bookings found.
+                    </p>
+                    <p className="text-gray-400 text-sm mt-2">
+                      Your booked trips will appear here.
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            ) : (
+              <tbody>
+                {bookings.map((b) => (
+                  <tr key={b._id} className="border-t hover:bg-gray-50">
+                    <td className="p-3 capitalize">
+                      {b.tripType.replace("_", " ")} ({b.vehicleType})
+                    </td>
+                    <td className="p-3">
+                      {b.fromLocation} → {b.toLocation}
+                    </td>
+                    <td className="p-3">{b.status}</td>
+                    <td className="p-3">{b.paymentStatus}</td>
+                    <td className="p-3 text-right">...</td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div> */}
         {/* ================= MOBILE CARDS ================= */}
-        <div className="lg:hidden space-y-4">
+        {/* <div className="lg:hidden space-y-4">
           {bookings.map((b) => (
             <div key={b._id} className="bg-white shadow rounded-xl p-4 border">
               <p className="font-semibold capitalize">
@@ -237,8 +300,32 @@ export default function MyBookings() {
               )}
             </div>
           ))}
+        </div> */}
+        <div className="lg:hidden">
+          {isEmpty ? (
+            <div className="flex items-center justify-center h-[50vh] text-center">
+              <div>
+                <p className="text-gray-500 text-lg font-medium">
+                  No bookings found.
+                </p>
+                <p className="text-gray-400 text-sm mt-2">
+                  Your booked trips will appear here.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {bookings.map((b) => (
+                <div
+                  key={b._id}
+                  className="bg-white shadow rounded-xl p-4 border"
+                >
+                  {/* card content */}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-
         {/* ================= QUOTE MODAL ================= */}
         {showQuoteModal && (
           <div

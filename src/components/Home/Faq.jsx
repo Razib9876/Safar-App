@@ -32,7 +32,7 @@ function Faq() {
 
   return (
     <section
-      className="relative py-24 bg-white bg-no-repeat bg-left bg-[length:auto]"
+      className="relative  bg-white bg-no-repeat bg-left bg-[length:auto]"
       style={{
         backgroundImage: `url(${faqBg})`,
         backgroundPosition: "0 70%",
@@ -64,7 +64,7 @@ function Faq() {
                   onClick={() => toggleQuestion(item.id)}
                   aria-expanded={isOpen}
                   aria-controls={`faq-${item.id}`}
-                  className={`w-full flex justify-between items-center px-6 md:px-8 py-6 text-left rounded-xl transition-all duration-300
+                  className={`w-full flex justify-between items-center px-6 md:px-8 py-3 text-left rounded-xl transition-all duration-300
                     ${
                       isOpen
                         ? "bg-orange-500 text-white shadow-lg"

@@ -5,10 +5,10 @@ import ChooseUs from "../components/Home/CooseUs";
 
 const Home = () => {
   return (
-    <div>
-      <Bannar></Bannar>
-      <ChooseUs></ChooseUs>
-      <Faq></Faq>
+    <div className="space-y-[80px]">
+      <Bannar />
+      <ChooseUs />
+      <Faq />
     </div>
   );
 };

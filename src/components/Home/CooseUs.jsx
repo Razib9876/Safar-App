@@ -6,15 +6,15 @@ import BgImg from "../../assets/images/chooseUs/bg.png";
 
 function ChooseUs() {
   return (
-    <section className="choose-section relative py-32 lg:py-40 overflow-hidden ">
+    <section className="choose-section relative   overflow-hidden ">
       {/* Background Image spanning top + bottom */}
       <div
-        className="absolute left-0 bottom-0 top-0 h-full w-full bg-no-repeat bg-left-bottom  "
+        className="absolute left-0 bottom-0 top-0  w-full bg-no-repeat bg-left-bottom  "
         style={{ backgroundImage: `url(${BgImg})` }}
       ></div>
 
       {/* Top - Main Image */}
-      <div className="flex justify-center relative gap-14 -mt-24 lg:-mt-36 z-20">
+      <div className="flex justify-center relative gap-14  z-20">
         <img
           src={MainImg}
           alt="car_img"
@@ -26,8 +26,8 @@ function ChooseUs() {
       <div className="flex justify-center relative z-20">
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16 max-w-7xl w-full px-6 md:px-12">
           {/* Left Column - Text */}
-          <div className="flex-1 flex flex-col gap-6 py-12 md:py-16">
-            <h4 className="text-primary text-lg font-semibold -mt-10 sm:mt-0">
+          <div className="flex-1 flex flex-col gap-6 ">
+            <h4 className="text-primary text-lg font-semibold  ">
               Why Choose Us
             </h4>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-snug">
