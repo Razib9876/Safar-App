@@ -6,7 +6,7 @@ function HeroPages({ name }) {
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('src/assets/images/hero/heroes-bg.png')",
+          backgroundImage: "url('/images/heroes-bg.png')",
         }}
       ></div>
 
