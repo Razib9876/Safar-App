@@ -40,7 +40,7 @@ export default function CompletedBookings() {
     return <div className="p-6 text-center">Loading completed bookings...</div>;
 
   return (
-    <div>
+    <div className="mx-auto ">
       <h1 className="text-2xl font-bold mb-6">Completed Bookings</h1>
 
       {/* ================= DESKTOP TABLE ================= */}
@@ -62,7 +62,7 @@ export default function CompletedBookings() {
               <tr>
                 <td
                   colSpan={6}
-                  className="p-4 text-center text-gray-500 font-medium"
+                  className="p-4 text-center text-gray-500 font-medium w-svh"
                 >
                   No completed bookings found
                 </td>

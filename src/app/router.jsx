@@ -22,6 +22,7 @@ import BookingDashboard from "../features/booking/BookingDashboard";
 import MyBookings from "../pages/MyBookings";
 import NotFound from "../components/common/NotFound";
 import BeDriver from "../pages/BeDriver";
+import DashboardRedirect from "../components/Layout/DashboardRedirect";
 
 export const router = createBrowserRouter([
   {
@@ -40,39 +41,47 @@ export const router = createBrowserRouter([
     path: "/dashboard",
     element: (
       <PrivateRoute>
-        <DashboardLayout />,
+        <DashboardLayout />
       </PrivateRoute>
     ),
     children: [
       {
         index: true,
+        element: <DashboardRedirect />, // 🔥 role-based redirect
+      },
+
+      {
+        path: "booking-management",
         element: (
           <AdminRoute>
-            <BookingManagement></BookingManagement>
+            <BookingManagement />
           </AdminRoute>
         ),
       },
+
       {
-        path: "driver",
+        path: "driver-management",
         element: (
           <AdminRoute>
-            <DriverManagement></DriverManagement>
+            <DriverManagement />
           </AdminRoute>
         ),
       },
+
       {
-        path: "trip",
+        path: "driver-dashboard",
         element: (
           <DriverRoute>
-            <DriverDashboard></DriverDashboard>
+            <DriverDashboard />
           </DriverRoute>
         ),
       },
+
       {
         path: "my-trips",
         element: (
           <PrivateRoute>
-            <BookingDashboard></BookingDashboard>
+            <BookingDashboard />
           </PrivateRoute>
         ),
       },

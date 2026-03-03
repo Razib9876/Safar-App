@@ -14,8 +14,9 @@ const BookingManagement = () => {
           name="my_tabs_3"
           className="tab"
           aria-label="Pending"
+          defaultChecked
         />
-        <div className="tab-content bg-base-100 border-base-300 p-6">
+        <div className="tab-content bg-base-100 border-base-300 p-6 ">
           <PendingBooking></PendingBooking>
         </div>
         <input
@@ -33,10 +34,9 @@ const BookingManagement = () => {
           name="my_tabs_3"
           className="tab"
           aria-label="Completed"
-          defaultChecked
         />
-        <div className="tab-content bg-base-100 border-base-300 p-6">
-          <CompletedBooking></CompletedBooking>
+        <div className="tab-content bg-base-100 border-t-base-300  p-6   min-h-screen">
+          <CompletedBooking />
         </div>
 
         <input

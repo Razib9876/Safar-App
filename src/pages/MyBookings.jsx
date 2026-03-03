@@ -1,29 +1,54 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../services/axiosSecure";
 import toast from "react-hot-toast";
 import HeroPages from "../components/AboutPages/HeroPages";
+import {
+  X,
+  ChevronLeft,
+  Phone,
+  Mail,
+  MapPin,
+  Calendar,
+  Clock,
+  Car,
+  Info,
+  CreditCard,
+  ArrowRight,
+  Download,
+  Eye,
+  Filter,
+  SortAsc,
+  SortDesc,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 
-// ================= PAYMENT METHODS =================
+// ================= CONSTANTS =================
 const paymentMethods = [
-  "bkash",
-  "nagad",
-  "rocket",
-  "upay",
-  "tap",
-  "surecash",
-  "visa",
-  "mastercard",
-  "amex",
-  "unionpay",
-  "dbbl_nexus",
-  "maestro",
-  "cash",
-  "internet_banking",
+  {
+    id: "bkash",
+    name: "bKash",
+    logo: "https://p7.hiclipart.com/preview/521/113/611/bkash-payment-gateway-mobile-payment-service-others.jpg",
+  },
+  {
+    id: "nagad",
+    name: "Nagad",
+    logo: "https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png",
+  },
+  {
+    id: "rocket",
+    name: "Rocket",
+    logo: "https://www.logotypes101.com/logos/824/6B6B567A868B3666D9227C0105D17E0E/Rocket.png",
+  },
+  {
+    id: "visa",
+    name: "Visa",
+    logo: "https://pngimg.com/uploads/visa/visa_PNG30.png",
+  },
 ];
 
-// ================= RESTRICTED STATUS =================
 const restrictedStatuses = [
   "confirmed",
   "on_trip",
@@ -34,16 +59,18 @@ const restrictedStatuses = [
 
 export default function MyBookings() {
   const queryClient = useQueryClient();
-
   const [userEmail, setUserEmail] = useState(null);
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [quotes, setQuotes] = useState([]);
-  const [selectedQuote, setSelectedQuote] = useState(null);
-  const [selectedMethod, setSelectedMethod] = useState(null);
-  const [amount, setAmount] = useState("");
 
-  const [showQuoteModal, setShowQuoteModal] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // MODAL STATES
+  const [viewingBooking, setViewingBooking] = useState(null); // The Main Detail Modal
+  const [activeStep, setActiveStep] = useState("details"); // details | quotes | vehicle | payment
+  const [selectedQuote, setSelectedQuote] = useState(null);
+  const [tempVehicleView, setTempVehicleView] = useState(null);
+
+  // FILTER/SORT STATES
+  const [quoteSort, setQuoteSort] = useState("newest"); // newest | oldest | low_price | high_price
+  const [selectedMethod, setSelectedMethod] = useState(null);
+  const [paymentPassword, setPaymentPassword] = useState("");
 
   // ================= AUTH =================
   useEffect(() => {
@@ -67,375 +94,594 @@ export default function MyBookings() {
     },
   });
 
-  // ================= CANCEL BOOKING =================
+  // ================= MUTATIONS =================
   const cancelMutation = useMutation({
-    mutationFn: (bookingId) =>
-      axiosSecure.patch(`/bookings/to-rejected/${bookingId}`),
+    mutationFn: (id) => axiosSecure.patch(`/bookings/to-rejected/${id}`),
     onSuccess: () => {
       toast.success("Booking cancelled");
+      setViewingBooking(null);
       queryClient.invalidateQueries(["my-bookings", userEmail]);
     },
-    onError: () => toast.error("Cancel failed"),
   });
 
-  // ================= CONFIRM BOOKING =================
-  const confirmMutation = useMutation({
-    mutationFn: ({ bookingId, quoteId }) =>
-      axiosSecure.patch(`/bookings/${bookingId}/confirm-booking/${quoteId}`),
-  });
-
-  // ================= PAYMENT INITIATE =================
-  const paymentMutation = useMutation({
-    mutationFn: (payload) => axiosSecure.post(`/payments/initiate`, payload),
-    onSuccess: () => {
-      toast.success("Payment successful");
-      setShowPaymentModal(false);
-      setShowQuoteModal(false);
-      resetPaymentState();
-      queryClient.invalidateQueries(["my-bookings", userEmail]);
-    },
-    onError: () => toast.error("Payment failed"),
-  });
-
-  // ================= DERIVED =================
-  const canModify = (status) => !restrictedStatuses.includes(status);
-
-  const resetPaymentState = () => {
-    setSelectedMethod(null);
-    setSelectedQuote(null);
-    setAmount("");
-  };
-
-  // ================= DRIVER RESPONSE =================
-  const handleDriverResponse = async (booking) => {
-    setSelectedBooking(booking);
-
-    try {
-      // ✅ FIXED: API now returns a direct array of quotes
-      const res = await axiosSecure.get(
-        `/bookings/${booking._id}/driver-quotes`,
+  const confirmAndPayMutation = useMutation({
+    mutationFn: async ({ bookingId, quoteId, payload }) => {
+      await axiosSecure.patch(
+        `/bookings/${bookingId}/confirm-booking/${quoteId}`,
       );
+      return axiosSecure.post(`/payments/initiate`, payload);
+    },
+    onSuccess: () => {
+      toast.success("Payment Successful! Trip Confirmed.");
+      closeModals();
+      queryClient.invalidateQueries(["my-bookings", userEmail]);
+    },
+    onError: (err) =>
+      toast.error(err.response?.data?.message || "Transaction failed"),
+  });
 
-      setQuotes(res.data.data || []);
-      setShowQuoteModal(true);
-    } catch (error) {
-      console.error("Failed to load driver quotes:", error);
-      toast.error("Failed to load quotes");
-    }
+  // ================= LOGIC =================
+  const closeModals = () => {
+    setViewingBooking(null);
+    setActiveStep("details");
+    setSelectedQuote(null);
+    setTempVehicleView(null);
+    setSelectedMethod(null);
+    setPaymentPassword("");
   };
 
-  // ================= CONFIRM + PAY =================
-  const handlePaymentSubmit = async () => {
-    if (!selectedMethod) return toast.error("Select payment method");
-    if (!amount) return toast.error("Enter amount");
+  const handleRowClick = (booking) => {
+    setViewingBooking(booking);
+    setActiveStep("details");
+  };
 
-    try {
-      await confirmMutation.mutateAsync({
-        bookingId: selectedBooking._id,
-        quoteId: selectedQuote._id,
-      });
-
-      await paymentMutation.mutateAsync({
-        bookingId: selectedBooking._id,
-        amount: Number(amount),
-        paymentMethod: selectedMethod,
-      });
-    } catch (error) {
-      console.error("Transaction failed:", error);
-      toast.error("Transaction failed");
+  const sortedQuotes = useMemo(() => {
+    if (!viewingBooking?.driverQuote) return [];
+    let list = [...viewingBooking.driverQuote];
+    switch (quoteSort) {
+      case "low_price":
+        return list.sort((a, b) => a.currentAmount - b.currentAmount);
+      case "high_price":
+        return list.sort((a, b) => b.currentAmount - a.currentAmount);
+      case "oldest":
+        return list.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+        );
+      default:
+        return list.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
     }
+  }, [viewingBooking, quoteSort]);
+
+  const calculateTotal = (amount) => Math.round(amount * 1.05);
+
+  const handleDownloadImage = async (url, filename) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename || "vehicle-image.jpg";
+    link.click();
   };
 
   if (isLoading)
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <span className="loading loading-spinner text-primary w-12"></span>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
-  const isEmpty = !isLoading && bookings.length === 0;
+
   return (
     <>
       <HeroPages name="My Bookings" />
-      <div className="pt-10 pr-10 pl-10">
-        {/* ================= DESKTOP TABLE ================= */}
-        <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100 text-left">
+
+      <div className="max-w-7xl mx-auto p-4 sm:p-10">
+        {/* DESKTOP TABLE */}
+        <div className="hidden lg:block overflow-hidden bg-white shadow-2xl border border-gray-100 rounded-2xl">
+          <table className="min-w-full">
+            <thead className="bg-gray-50 border-b">
               <tr>
-                <th className="p-3">Trip</th>
-                <th className="p-3">Route</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Payment</th>
-                <th className="p-3 text-right">Action</th>
+                <th className="p-4 text-left text-xs font-bold text-gray-500 uppercase">
+                  Route / Type
+                </th>
+                <th className="p-4 text-left text-xs font-bold text-gray-500 uppercase">
+                  Schedule
+                </th>
+                <th className="p-4 text-left text-xs font-bold text-gray-500 uppercase">
+                  Status
+                </th>
+                <th className="p-4 text-left text-xs font-bold text-gray-500 uppercase">
+                  Payment
+                </th>
+                <th className="p-4 text-right text-xs font-bold text-gray-500 uppercase">
+                  Actions
+                </th>
               </tr>
             </thead>
-            {isEmpty ? (
-              <tbody>
-                <tr>
-                  <td colSpan="5" className="h-[50vh] text-center align-middle">
-                    <p className="text-gray-500 text-lg font-medium">
-                      No bookings found.
-                    </p>
-                    <p className="text-gray-400 text-sm mt-2">
-                      Your booked trips will appear here.
-                    </p>
+            <tbody className="divide-y divide-gray-100">
+              {bookings.map((b) => (
+                <tr
+                  key={b._id}
+                  onClick={() => handleRowClick(b)}
+                  className="hover:bg-blue-50/50 cursor-pointer transition-colors group"
+                >
+                  <td className="p-4">
+                    <div className="font-bold text-gray-800 capitalize">
+                      {b.fromLocation.split(",")[0]} →{" "}
+                      {b.toLocation.split(",")[0]}
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      {b.tripType.replace("_", " ")} • {b.vehicleType}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <div className="text-sm flex items-center gap-1">
+                      <Calendar size={14} />{" "}
+                      {new Date(b.dateFrom).toLocaleDateString()}
+                    </div>
+                    <div className="text-xs text-gray-400 flex items-center gap-1">
+                      <Clock size={14} /> {b.timeFrom}
+                    </div>
+                  </td>
+                  <td className="p-4">
+                    <span
+                      className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
+                        b.status === "confirmed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-orange-100 text-orange-700"
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm font-medium">{b.paymentStatus}</td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end items-center gap-2">
+                      <button className="p-2 hover:bg-white rounded-full text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
+                        <Eye size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              </tbody>
-            ) : (
-              <tbody>
-                {bookings.map((b) => (
-                  <tr key={b._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3 capitalize">
-                      {b.tripType.replace("_", " ")} ({b.vehicleType})
-                    </td>
-                    <td className="p-3">
-                      {b.fromLocation} → {b.toLocation}
-                    </td>
-                    <td className="p-3">{b.status}</td>
-                    <td className="p-3">{b.paymentStatus}</td>
-                    <td className="p-3 text-right space-x-2">
-                      {canModify(b.status) && (
-                        <>
-                          <button
-                            onClick={() => cancelMutation.mutate(b._id)}
-                            className="bg-red-500 text-white px-3 py-1 rounded"
-                          >
-                            Cancel
-                          </button>
-
-                          {b.driverQuote?.length > 0 && (
-                            <button
-                              onClick={() => handleDriverResponse(b)}
-                              className="bg-blue-500 text-white px-3 py-1 rounded"
-                            >
-                              Driver Response
-                            </button>
-                          )}
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
+              ))}
+            </tbody>
           </table>
         </div>
-        {/* 
-        <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100 text-left">
-              <tr>
-                <th className="p-3">Trip</th>
-                <th className="p-3">Route</th>
-                <th className="p-3">Status</th>
-                <th className="p-3">Payment</th>
-                <th className="p-3 text-right">Action</th>
-              </tr>
-            </thead>
 
-            {isEmpty ? (
-              <tbody>
-                <tr>
-                  <td colSpan="5" className="h-[50vh] text-center align-middle">
-                    <p className="text-gray-500 text-lg font-medium">
-                      No bookings found.
-                    </p>
-                    <p className="text-gray-400 text-sm mt-2">
-                      Your booked trips will appear here.
-                    </p>
-                  </td>
-                </tr>
-              </tbody>
-            ) : (
-              <tbody>
-                {bookings.map((b) => (
-                  <tr key={b._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3 capitalize">
-                      {b.tripType.replace("_", " ")} ({b.vehicleType})
-                    </td>
-                    <td className="p-3">
-                      {b.fromLocation} → {b.toLocation}
-                    </td>
-                    <td className="p-3">{b.status}</td>
-                    <td className="p-3">{b.paymentStatus}</td>
-                    <td className="p-3 text-right">...</td>
-                  </tr>
-                ))}
-              </tbody>
-            )}
-          </table>
-        </div> */}
-        {/* ================= MOBILE CARDS ================= */}
-        {/* <div className="lg:hidden space-y-4">
+        {/* MOBILE LIST */}
+        <div className="lg:hidden space-y-4">
           {bookings.map((b) => (
-            <div key={b._id} className="bg-white shadow rounded-xl p-4 border">
-              <p className="font-semibold capitalize">
-                {b.tripType.replace("_", " ")} ({b.vehicleType})
+            <div
+              key={b._id}
+              onClick={() => handleRowClick(b)}
+              className="bg-white p-4 rounded-2xl shadow-md border border-gray-100"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <span className="text-[10px] font-black uppercase tracking-widest text-blue-500">
+                  {b.tripType.replace("_", " ")}
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100">
+                  {b.status}
+                </span>
+              </div>
+              <p className="font-bold text-gray-800">
+                {b.fromLocation.split(",")[0]} → {b.toLocation.split(",")[0]}
               </p>
-              <p>
-                {b.fromLocation} → {b.toLocation}
-              </p>
-              <p>Status: {b.status}</p>
-              <p>Payment: {b.paymentStatus}</p>
+              <div className="mt-3 flex justify-between items-center border-t pt-3">
+                <div className="text-xs text-gray-500">
+                  {new Date(b.dateFrom).toLocaleDateString()}
+                </div>
+                <div className="font-bold text-blue-600 flex items-center gap-1 text-sm">
+                  Details <ArrowRight size={14} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-              {canModify(b.status) && (
-                <div className="mt-3 flex gap-2">
+      {/* ================= BOSS LEVEL MODAL ================= */}
+      {viewingBooking && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4">
+          <div
+            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+            onClick={closeModals}
+          />
+
+          <div className="relative bg-white w-full max-w-2xl h-full sm:h-auto sm:max-h-[90vh] sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-in slide-in-from-bottom duration-300">
+            {/* Modal Header */}
+            <div className="p-4 border-b flex items-center justify-between bg-white sticky top-0 z-10">
+              <div className="flex items-center gap-3">
+                {activeStep !== "details" && (
                   <button
-                    onClick={() => cancelMutation.mutate(b._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    onClick={() => {
+                      if (activeStep === "vehicle") setActiveStep("quotes");
+                      else if (activeStep === "payment")
+                        setActiveStep("quotes");
+                      else setActiveStep("details");
+                    }}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-all"
                   >
-                    Cancel
+                    <ChevronLeft />
                   </button>
+                )}
+                <div>
+                  <h2 className="font-black text-xl text-gray-800 leading-tight">
+                    {activeStep === "details" && "Booking Information"}
+                    {activeStep === "quotes" && "Available Quotes"}
+                    {activeStep === "vehicle" && "Vehicle Inspection"}
+                    {activeStep === "payment" && "Secure Checkout"}
+                  </h2>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                    ID: {viewingBooking._id.slice(-8)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={closeModals}
+                className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-full transition-all"
+              >
+                <X size={24} />
+              </button>
+            </div>
 
-                  {b.driverQuote?.length > 0 && (
+            {/* Modal Content */}
+            <div className="flex-grow overflow-y-auto p-4 sm:p-6 bg-gray-50/30">
+              {/* STEP 1: NESTED DETAILS */}
+              {activeStep === "details" && (
+                <div className="space-y-6">
+                  {/* Trip Summary Card */}
+                  <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">
+                          From
+                        </label>
+                        <p className="text-sm font-semibold flex items-start gap-1">
+                          <MapPin size={14} className="text-red-500 mt-0.5" />{" "}
+                          {viewingBooking.fromLocation}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">
+                          To
+                        </label>
+                        <p className="text-sm font-semibold flex items-start gap-1">
+                          <MapPin size={14} className="text-green-500 mt-0.5" />{" "}
+                          {viewingBooking.toLocation}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">
+                          Pickup Date
+                        </label>
+                        <p className="text-sm font-semibold flex items-center gap-1">
+                          <Calendar size={14} />{" "}
+                          {new Date(
+                            viewingBooking.dateFrom,
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-bold text-gray-400 uppercase">
+                          Pickup Time
+                        </label>
+                        <p className="text-sm font-semibold flex items-center gap-1">
+                          <Clock size={14} /> {viewingBooking.timeFrom}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Driver Details (Conditional) */}
+                  {viewingBooking.status === "confirmed" &&
+                  viewingBooking.driverId ? (
+                    <div className="bg-blue-600 p-5 rounded-2xl text-white shadow-lg shadow-blue-200">
+                      <h3 className="text-xs font-black uppercase mb-3 opacity-80 tracking-widest">
+                        Assigned Driver
+                      </h3>
+                      <div className="flex items-center gap-4">
+                        <img
+                          src={viewingBooking.driverId.photo}
+                          className="w-16 h-16 rounded-full border-2 border-white/30 object-cover"
+                        />
+                        <div className="flex-grow">
+                          <p className="font-black text-lg">
+                            {viewingBooking.driverId.name}
+                          </p>
+                          <div className="flex gap-3 mt-2">
+                            <a
+                              href={`tel:${viewingBooking.driverId.phoneNumber}`}
+                              className="flex items-center gap-1 bg-white/20 hover:bg-white/40 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+                            >
+                              <Phone size={14} /> Call
+                            </a>
+                            <a
+                              href={`mailto:driver@example.com`}
+                              className="flex items-center gap-1 bg-white/20 hover:bg-white/40 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+                            >
+                              <Mail size={14} /> Message
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 flex items-center gap-3">
+                      <Info className="text-orange-500" />
+                      <p className="text-xs text-orange-700 font-medium leading-relaxed">
+                        Driver details are hidden until you confirm a quote and
+                        complete payment for security reasons.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3">
                     <button
-                      onClick={() => handleDriverResponse(b)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      disabled={restrictedStatuses.includes(
+                        viewingBooking.status,
+                      )}
+                      onClick={() => cancelMutation.mutate(viewingBooking._id)}
+                      className="flex items-center justify-center gap-2 bg-red-50 text-red-600 py-3 rounded-xl font-bold text-sm hover:bg-red-100 disabled:opacity-50 transition-all"
                     >
-                      Driver Response
+                      Cancel Booking
                     </button>
+                    <button
+                      onClick={() => setActiveStep("quotes")}
+                      className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-600 transition-all shadow-lg shadow-gray-200"
+                    >
+                      View {viewingBooking.driverQuote?.length || 0} Quotes{" "}
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 2: QUOTES LIST */}
+              {activeStep === "quotes" && (
+                <div className="space-y-4">
+                  {/* Sort Controls */}
+                  <div className="flex items-center justify-between bg-white p-2 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-2 text-xs font-bold text-gray-500 pl-2">
+                      <Filter size={14} /> Sort By:
+                    </div>
+                    <div className="flex gap-1">
+                      {[
+                        {
+                          id: "newest",
+                          icon: <Clock size={12} />,
+                          label: "New",
+                        },
+                        {
+                          id: "low_price",
+                          icon: <SortAsc size={12} />,
+                          label: "Price",
+                        },
+                      ].map((s) => (
+                        <button
+                          key={s.id}
+                          onClick={() => setQuoteSort(s.id)}
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase flex items-center gap-1 transition-all ${
+                            quoteSort === s.id
+                              ? "bg-blue-600 text-white shadow-md"
+                              : "bg-gray-50 text-gray-400 hover:bg-gray-100"
+                          }`}
+                        >
+                          {s.icon} {s.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {sortedQuotes.length === 0 ? (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200">
+                      <p className="text-gray-400 italic">
+                        No driver responses yet.
+                      </p>
+                    </div>
+                  ) : (
+                    sortedQuotes.map((q) => {
+                      const v =
+                        q.driverId?.activeVehicle ||
+                        q.driverId?.vehicleDetails?.[0];
+                      const finalAmount = calculateTotal(q.currentAmount);
+
+                      return (
+                        <div
+                          key={q._id}
+                          className="bg-white p-4 rounded-2xl border border-gray-200 hover:border-blue-500 transition-all group"
+                        >
+                          <div className="flex gap-4">
+                            <div className="relative w-24 h-24 flex-shrink-0">
+                              <img
+                                src={v?.mainPhoto}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                              <button
+                                onClick={() => {
+                                  setTempVehicleView(v);
+                                  setActiveStep("vehicle");
+                                }}
+                                className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white rounded-xl"
+                              >
+                                <Eye size={20} />
+                              </button>
+                            </div>
+                            <div className="flex-grow">
+                              <div className="flex justify-between items-start">
+                                <h4 className="font-black text-gray-800 uppercase tracking-tight">
+                                  {v?.type}{" "}
+                                  <span className="text-gray-400">
+                                    | {v?.model}
+                                  </span>
+                                </h4>
+                                <div className="text-right">
+                                  <p className="text-sm font-black text-blue-600">
+                                    {finalAmount} TK
+                                  </p>
+                                  <p className="text-[8px] text-gray-400 font-bold uppercase">
+                                    Incl. 5% Fee
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-2">
+                                <span className="text-[10px] font-bold bg-green-50 text-green-700 px-2 py-0.5 rounded-md border border-green-100 flex items-center gap-1">
+                                  <CheckCircle2 size={10} /> {v?.capacity} Seats
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  setSelectedQuote(q);
+                                  setActiveStep("payment");
+                                }}
+                                className="w-full mt-3 bg-gray-900 text-white py-2 rounded-lg text-xs font-black uppercase tracking-widest hover:bg-blue-600 transition-all shadow-md"
+                              >
+                                Select Quote
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
                   )}
                 </div>
               )}
-            </div>
-          ))}
-        </div> */}
-        <div className="lg:hidden">
-          {isEmpty ? (
-            <div className="flex items-center justify-center h-[50vh] text-center">
-              <div>
-                <p className="text-gray-500 text-lg font-medium">
-                  No bookings found.
-                </p>
-                <p className="text-gray-400 text-sm mt-2">
-                  Your booked trips will appear here.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {bookings.map((b) => (
-                <div
-                  key={b._id}
-                  className="bg-white shadow rounded-xl p-4 border"
-                >
-                  {/* card content */}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* ================= QUOTE MODAL ================= */}
-        {showQuoteModal && (
-          <div
-            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-            onClick={() => setShowQuoteModal(false)}
-          >
-            <div
-              className="bg-white w-full max-w-lg rounded-xl p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold mb-4">Driver Quotes</h2>
 
-              {quotes.length === 0 ? (
-                <p>No quotes found.</p>
-              ) : (
-                quotes.map((q) => (
-                  <div
-                    key={q._id}
-                    className="border p-3 rounded mb-3 flex justify-between"
-                  >
-                    <div>
-                      <p>Status: {q.status}</p>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        {q.previousAmount &&
-                        q.previousAmount !== q.currentAmount
-                          ? `${q.previousAmount} → ${q.currentAmount}`
-                          : q.currentAmount}
+              {/* STEP 3: VEHICLE GALLERY */}
+              {activeStep === "vehicle" && tempVehicleView && (
+                <div className="space-y-4">
+                  <div className="relative aspect-video rounded-2xl overflow-hidden border">
+                    <img
+                      src={tempVehicleView.mainPhoto}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      onClick={() =>
+                        handleDownloadImage(
+                          tempVehicleView.mainPhoto,
+                          `${tempVehicleView.model}.jpg`,
+                        )
+                      }
+                      className="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition-all"
+                    >
+                      <Download size={18} />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-white p-4 rounded-2xl border border-gray-100">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Model
                       </p>
-
-                      <button
-                        onClick={() => {
-                          setSelectedQuote(q);
-                          setAmount(q.currentAmount);
-                          setShowPaymentModal(true);
-                        }}
-                        className="bg-green-500 text-white px-3 py-1 rounded mt-2"
-                      >
-                        Confirm
-                      </button>
+                      <p className="font-bold text-gray-800">
+                        {tempVehicleView.model}
+                      </p>
+                    </div>
+                    <div className="bg-white p-4 rounded-2xl border border-gray-100">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                        Registration
+                      </p>
+                      <p className="font-bold text-gray-800">
+                        {tempVehicleView.registrationNumber}
+                      </p>
                     </div>
                   </div>
-                ))
+                </div>
+              )}
+
+              {/* STEP 4: PAYMENT */}
+              {activeStep === "payment" && selectedQuote && (
+                <div className="space-y-6">
+                  <div className="bg-gray-100 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Final Amount
+                      </p>
+                      <p className="text-2xl font-black text-gray-900">
+                        {calculateTotal(selectedQuote.currentAmount)} TK
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-gray-400">
+                        Base: {selectedQuote.currentAmount} TK
+                      </p>
+                      <p className="text-[10px] font-bold text-blue-500">
+                        Service Fee: 5%
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black uppercase text-gray-500 mb-3 block">
+                      Select Payment Method
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {paymentMethods.map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => setSelectedMethod(m.id)}
+                          className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 bg-white ${
+                            selectedMethod === m.id
+                              ? "border-blue-500 bg-blue-50 shadow-md"
+                              : "border-gray-100 grayscale opacity-60"
+                          }`}
+                        >
+                          <img
+                            src={m.logo}
+                            className="h-8 w-auto object-contain"
+                          />
+                          <span className="text-[10px] font-black uppercase">
+                            {m.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <CreditCard
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={18}
+                      />
+                      <input
+                        type="password"
+                        placeholder="Enter Gateway Password"
+                        value={paymentPassword}
+                        onChange={(e) => setPaymentPassword(e.target.value)}
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                      />
+                    </div>
+                    <button
+                      disabled={
+                        !selectedMethod ||
+                        !paymentPassword ||
+                        confirmAndPayMutation.isPending
+                      }
+                      onClick={() =>
+                        confirmAndPayMutation.mutate({
+                          bookingId: viewingBooking._id,
+                          quoteId: selectedQuote._id,
+                          payload: {
+                            bookingId: viewingBooking._id,
+                            amount: calculateTotal(selectedQuote.currentAmount),
+                            paymentMethod: selectedMethod,
+                          },
+                        })
+                      }
+                      className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-[2px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+                    >
+                      {confirmAndPayMutation.isPending
+                        ? "Processing..."
+                        : "Confirm & Pay Now"}
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
-        )}
-
-        {/* ================= PAYMENT MODAL ================= */}
-        {showPaymentModal && (
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-            onClick={() => setShowPaymentModal(false)}
-          >
-            <div
-              className="bg-white w-full max-w-md rounded-xl p-6"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-xl font-bold mb-4">Select Payment Method</h2>
-
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                {paymentMethods.map((m) => (
-                  <button
-                    key={m}
-                    onClick={() => setSelectedMethod(m)}
-                    className={`border p-2 rounded text-sm ${
-                      selectedMethod === m ? "bg-blue-500 text-white" : ""
-                    }`}
-                  >
-                    {m}
-                  </button>
-                ))}
-              </div>
-
-              {selectedMethod && (
-                <>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="border w-full p-2 rounded mb-3"
-                    placeholder="Enter amount"
-                  />
-
-                  <input
-                    type="password"
-                    className="border w-full p-2 rounded mb-3"
-                    placeholder="Enter password"
-                  />
-
-                  <button
-                    onClick={handlePaymentSubmit}
-                    className={`w-full py-2 rounded text-white ${
-                      selectedMethod === "bkash"
-                        ? "bg-pink-600"
-                        : selectedMethod === "nagad"
-                          ? "bg-orange-600"
-                          : "bg-green-600"
-                    }`}
-                  >
-                    Pay with {selectedMethod}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

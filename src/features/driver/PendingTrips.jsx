@@ -157,16 +157,25 @@ export default function PendingBooking() {
                   <td className="p-3">{driverQuote?.status || "-"}</td>
                   <td className="p-3">
                     {driverQuote ? (
-                      <>
-                        {driverQuote.previousAmount && (
-                          <span className="line-through mr-1">
+                      <div className="flex items-center">
+                        {/* Logic: If previousAmount is 0, this evaluates to false and hides the span.
+          Only shows if previousAmount is 1 or higher.
+      */}
+                        {driverQuote.previousAmount > 0 && (
+                          <span className="line-through text-gray-400 mr-2 text-xs">
                             {driverQuote.previousAmount}
                           </span>
                         )}
-                        <span>{driverQuote.currentAmount}</span>
-                      </>
+
+                        <span className="font-bold text-blue-600">
+                          {driverQuote.currentAmount}
+                        </span>
+                        <span className="text-[10px] ml-1 text-gray-400 font-medium">
+                          TK
+                        </span>
+                      </div>
                     ) : (
-                      "-"
+                      <span className="text-gray-300">—</span>
                     )}
                   </td>
                   <td className="p-3 text-right">
@@ -224,6 +233,22 @@ export default function PendingBooking() {
                   {new Date(booking.dateTo).toLocaleDateString()} |{" "}
                   {formatTime12Hour(booking.timeTo)}
                 </p>
+                {/* <p>
+                  <strong>Amount:</strong>{" "}
+                  {driverQuote ? (
+                    <>
+                      {driverQuote.previousAmount && (
+                        <span className="line-through mr-1">
+                          {driverQuote.previousAmount}
+                        </span>
+                      )}
+                      <span>{driverQuote.currentAmount}</span>
+                    </>
+                  ) : (
+                    "-"
+                  )}
+                </p> */}
+
                 <p>
                   <strong>Amount:</strong>{" "}
                   {driverQuote ? (
@@ -259,7 +284,7 @@ export default function PendingBooking() {
       </div>
 
       {/* ================= MODAL ================= */}
-      {offerModalOpen && selectedBooking && (
+      {/* {offerModalOpen && selectedBooking && (
         <div
           className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
           onClick={() => setOfferModalOpen(false)}
@@ -291,16 +316,28 @@ export default function PendingBooking() {
 
             <input
               type="number"
-              placeholder="Enter your amount"
+              min="0" // Prevents the browser "spinner" from going below 0
+              onKeyDown={(e) =>
+                ["-", "e", "E"].includes(e.key) && e.preventDefault()
+              }
+              placeholder="Your Demands"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (Number(val) >= 0 || val === "") {
+                  setAmount(val);
+                }
+              }}
               className="border p-2 w-full rounded mb-3"
             />
 
             {amount && (
               <p className="text-sm text-gray-600 mb-4">
                 <strong>With 5% Admin Commission:</strong>{" "}
-                {(Number(amount) * 1.05).toFixed(2)} TK
+                <span className="text-red-600">
+                  {(Number(amount) * 1.05).toFixed(2)}{" "}
+                </span>
+                TK
               </p>
             )}
 
@@ -314,6 +351,134 @@ export default function PendingBooking() {
 
               <button
                 className="bg-green-500 text-white px-4 py-2 rounded"
+                onClick={handleSendOffer}
+              >
+                {getDriverQuote(selectedBooking)
+                  ? "Update Offer"
+                  : "Send Offer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
+      {/* ================= FIXED MODAL ================= */}
+      {offerModalOpen && selectedBooking && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          onClick={() => setOfferModalOpen(false)}
+        >
+          <div
+            className="bg-white w-full max-w-lg rounded-xl p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-xl font-bold mb-4 text-gray-800">
+              {getDriverQuote(selectedBooking) ? "Update Offer" : "Send Offer"}
+            </h2>
+
+            {/* Trip Details Summary */}
+            <div className="space-y-2 text-sm mb-6 p-3 bg-gray-50 rounded-lg border border-gray-100">
+              <p>
+                <strong className="text-gray-700">Rider:</strong>{" "}
+                {selectedBooking.userId?.name}
+              </p>
+              <p>
+                <strong className="text-gray-700">Route:</strong>{" "}
+                {selectedBooking.fromLocation} → {selectedBooking.toLocation}
+              </p>
+              <p>
+                <strong className="text-gray-700">Date & Time:</strong>{" "}
+                {new Date(selectedBooking.dateFrom).toLocaleDateString()}{" "}
+                {formatTime12Hour(selectedBooking.timeFrom)} →{" "}
+                {new Date(selectedBooking.dateTo).toLocaleDateString()}{" "}
+                {formatTime12Hour(selectedBooking.timeTo)}
+              </p>
+            </div>
+
+            {/* Amount Input with Up/Down Buttons & Zero Fix */}
+            <label className="block text-sm font-medium text-gray-600 mb-2">
+              Your Demand (TK)
+            </label>
+            <div className="flex items-center gap-2 mb-4">
+              {/* Minus Button */}
+              <button
+                type="button"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-bold text-2xl transition-all border border-gray-300 active:scale-95"
+                onClick={() => {
+                  const current = Number(amount) || 0;
+                  const newVal = Math.max(0, current - 100); // Stop at 0
+                  setAmount(newVal.toString());
+                }}
+              >
+                −
+              </button>
+
+              <input
+                type="number"
+                min="0"
+                placeholder="0"
+                onKeyDown={(e) =>
+                  ["-", "e", "E"].includes(e.key) && e.preventDefault()
+                }
+                value={amount}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "") {
+                    setAmount("");
+                  } else {
+                    // FIX: Convert to Number then String to strip "0500" leading zeros
+                    const numericVal = Number(val);
+                    if (numericVal >= 0) {
+                      setAmount(numericVal.toString());
+                    }
+                  }
+                }}
+                className="border-2 border-gray-300 p-2 flex-grow text-center rounded-lg text-lg font-semibold focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+              />
+
+              {/* Plus Button */}
+              <button
+                type="button"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg font-bold text-2xl transition-all border border-gray-300 active:scale-95"
+                onClick={() => {
+                  const current = Number(amount) || 0;
+                  const newVal = current + 100;
+                  setAmount(newVal.toString());
+                }}
+              >
+                +
+              </button>
+            </div>
+
+            {/* Admin Commission Calculation */}
+            {amount && Number(amount) > 0 && (
+              <div className="bg-blue-50 p-3 rounded-lg mb-6 border border-blue-100">
+                <p className="text-sm text-blue-800 flex justify-between">
+                  <span>Admin Commission (5%):</span>
+                  <span className="font-bold">
+                    {(Number(amount) * 0.05).toFixed(2)} TK
+                  </span>
+                </p>
+                <p className="text-sm text-gray-800 mt-1 flex justify-between border-t border-blue-200 pt-1 font-semibold">
+                  <span>Total with Commission:</span>
+                  <span className="text-red-600">
+                    {(Number(amount) * 1.05).toFixed(2)} TK
+                  </span>
+                </p>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div className="flex justify-end gap-3">
+              <button
+                className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors"
+                onClick={() => setOfferModalOpen(false)}
+              >
+                Close
+              </button>
+
+              <button
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-md active:scale-95"
                 onClick={handleSendOffer}
               >
                 {getDriverQuote(selectedBooking)

@@ -29,7 +29,7 @@ export default function DashboardLayout() {
     if (path === "/dashboard/users") return "Manage Users";
     if (path === "/dashboard/rides") return "Manage Rides";
     if (path === "/dashboard/driver") return "Driver Management";
-    if (path === "/dashboard/trip") return "All Trip";
+    if (path === "/dashboard/") return "All Trip";
     if (path === "/dashboard/") return "Trip Management";
     if (path === "/dashboard/my-trips") return "My Bookings";
     return "Dashboard";
@@ -201,10 +201,10 @@ export default function DashboardLayout() {
               {/* Trip (driver only) */}
               {user.role === "driver" && (
                 <li>
-                  <Link to="/dashboard/trip">
+                  <Link to="/dashboard">
                     <button
                       className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                      data-tip="Trip"
+                      data-tip="All Trip"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

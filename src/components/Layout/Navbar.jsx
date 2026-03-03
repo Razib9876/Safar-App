@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import SafarLogo from "../common/SafarLogo";
+import { FaUserCircle } from "react-icons/fa";
 
 /* Active link style */
 const navStyle = ({ isActive }) =>
@@ -129,16 +130,12 @@ export default function Navbar() {
       </div>
 
       {/* RIGHT */}
-      <div className="navbar-end gap-3">
+      <div className="navbar-end gap-3 pr-8">
         {user ? (
           <div className="dropdown dropdown-end">
-            {/* Avatar */}
-            <label tabIndex={0} className="cursor-pointer avatar">
-              <div className="w-9 rounded-full">
-                <img
-                  src={user?.photoURL || "https://i.ibb.co/2kR0KjN/user.png"}
-                  alt="profile"
-                />
+            <label tabIndex={0} className="cursor-pointer">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center bg-gray-200 hover:bg-gray-300 transition">
+                <FaUserCircle className="w-8 h-8 text-gray-600" />
               </div>
             </label>
 
