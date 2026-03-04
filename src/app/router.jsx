@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardRedirect />, // 🔥 role-based redirect
+        element: <DashboardRedirect />,
       },
 
       {

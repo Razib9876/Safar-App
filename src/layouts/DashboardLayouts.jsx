@@ -28,7 +28,7 @@ export default function DashboardLayout() {
     if (path === "/dashboard/profile") return "Profile";
     if (path === "/dashboard/users") return "Manage Users";
     if (path === "/dashboard/rides") return "Manage Rides";
-    if (path === "/dashboard/driver") return "Driver Management";
+    if (path === "/dashboard/driver-management") return "Driver Management";
     if (path === "/dashboard/") return "All Trip";
     if (path === "/dashboard/") return "Trip Management";
     if (path === "/dashboard/my-trips") return "My Bookings";
@@ -134,7 +134,7 @@ export default function DashboardLayout() {
               {/* Driver Manager (admin only) */}
               {user.role === "admin" && (
                 <li>
-                  <Link to="/dashboard/driver">
+                  <Link to="/dashboard/driver-management">
                     <button
                       className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                       data-tip="Driver Management"
