@@ -1,7 +1,6 @@
 // src/features/admin/AdminDashboard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import CurrentTrip from "./CurrentTrip";
 import PendingTrips from "./PendingTrips";
 import CompletedTrips from "./CompletedTrips";
 import PendingBooking from "./PendingTrips";
