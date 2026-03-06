@@ -114,7 +114,7 @@ export default function Register() {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-lg"
           >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
+            {/* {showPassword ? <FaEyeSlash /> : <FaEye />} */}
           </button>
         </div>
 
@@ -132,7 +132,7 @@ export default function Register() {
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 text-lg"
           >
-            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+            {/* {showConfirmPassword ? <FaEyeSlash /> : <FaEye />} */}
           </button>
         </div>
 

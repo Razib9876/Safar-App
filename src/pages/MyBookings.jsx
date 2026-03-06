@@ -483,8 +483,9 @@ export default function MyBookings() {
                   ) : (
                     sortedQuotes.map((q) => {
                       const v =
-                        q.driverId?.activeVehicle ||
-                        q.driverId?.vehicleDetails?.[0];
+                        q?.driverId?.activeVehicle ??
+                        q?.driverId?.vehicleDetails?.[0] ??
+                        {};
                       const finalAmount = calculateTotal(q.currentAmount);
 
                       return (
@@ -495,7 +496,8 @@ export default function MyBookings() {
                           <div className="flex gap-4">
                             <div className="relative w-24 h-24 flex-shrink-0">
                               <img
-                                src={v?.mainPhoto}
+                                src={v?.mainPhoto || "/no-vehicle.png"}
+                                alt="vehicle"
                                 className="w-full h-full object-cover rounded-xl"
                               />
                               <button
