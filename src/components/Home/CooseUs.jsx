@@ -14,7 +14,7 @@ function ChooseUs() {
       ></div>
 
       {/* Top - Main Image */}
-      <div className="flex justify-center relative gap-14  z-20">
+      <div className="flex justify-center relative gap-14  ">
         <img
           src={MainImg}
           alt="car_img"
@@ -23,7 +23,7 @@ function ChooseUs() {
       </div>
 
       {/* Bottom - Content */}
-      <div className="flex justify-center relative z-20">
+      <div className="flex justify-center relative ">
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16 max-w-7xl w-full px-6 md:px-12">
           {/* Left Column - Text */}
           <div className="flex-1 flex flex-col gap-6 ">
@@ -45,7 +45,7 @@ function ChooseUs() {
 
           {/* Right Column - Boxes */}
           <>
-            <div className="-mt-16 sm:mt-0 flex-1 flex flex-col gap-6">
+            <div className=" sm:mt-0 flex-1 flex flex-col gap-6">
               <a
                 href="#home"
                 className="inline-flex items-center text-primary font-medium hover:text-primary-dark transition-colors duration-300 mt-2"

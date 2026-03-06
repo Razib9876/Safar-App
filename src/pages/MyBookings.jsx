@@ -70,7 +70,6 @@ export default function MyBookings() {
   // FILTER/SORT STATES
   const [quoteSort, setQuoteSort] = useState("newest"); // newest | oldest | low_price | high_price
   const [selectedMethod, setSelectedMethod] = useState(null);
-  const [paymentPassword, setPaymentPassword] = useState("");
 
   // ================= AUTH =================
   useEffect(() => {
@@ -95,20 +94,46 @@ export default function MyBookings() {
   });
 
   // ================= MUTATIONS =================
+  // const cancelMutation = useMutation({
+  //   mutationFn: (id) => axiosSecure.patch(`/bookings/to-rejected/${id}`),
+  //   onSuccess: () => {
+  //     toast.success("Booking cancelled");
+  //     setViewingBooking(null);
+  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
+  //   },
+  // });
+
+  // const confirmAndPayMutation = useMutation({
+  //   mutationFn: async ({ bookingId, quoteId, payload }) => {
+  //     await axiosSecure.patch(
+  //       `/bookings/${bookingId}/confirm-booking/${quoteId}`,
+  //     );
+  //     return axiosSecure.post(`/payments/initiate`, payload);
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("Payment Successful! Trip Confirmed.");
+  //     closeModals();
+  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
+  //   },
+  //   onError: (err) =>
+  //     toast.error(err.response?.data?.message || "Transaction failed"),
+  // });
+  // ================= MUTATIONS =================
   const cancelMutation = useMutation({
-    mutationFn: (id) => axiosSecure.patch(`/bookings/to-rejected/${id}`),
+    mutationFn: (bookingId) =>
+      axiosSecure.patch(`/bookings/to-rejected/${bookingId}`),
     onSuccess: () => {
       toast.success("Booking cancelled");
       setViewingBooking(null);
       queryClient.invalidateQueries(["my-bookings", userEmail]);
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to cancel booking");
+    },
   });
-
   const confirmAndPayMutation = useMutation({
-    mutationFn: async ({ bookingId, quoteId, payload }) => {
-      await axiosSecure.patch(
-        `/bookings/${bookingId}/confirm-booking/${quoteId}`,
-      );
+    mutationFn: async ({ payload }) => {
+      // Only call the payment endpoint
       return axiosSecure.post(`/payments/initiate`, payload);
     },
     onSuccess: () => {
@@ -116,10 +141,10 @@ export default function MyBookings() {
       closeModals();
       queryClient.invalidateQueries(["my-bookings", userEmail]);
     },
-    onError: (err) =>
-      toast.error(err.response?.data?.message || "Transaction failed"),
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Transaction failed");
+    },
   });
-
   // ================= LOGIC =================
   const closeModals = () => {
     setViewingBooking(null);
@@ -127,7 +152,6 @@ export default function MyBookings() {
     setSelectedQuote(null);
     setTempVehicleView(null);
     setSelectedMethod(null);
-    setPaymentPassword("");
   };
 
   const handleRowClick = (booking) => {
@@ -418,6 +442,7 @@ export default function MyBookings() {
                   )}
 
                   <div className="grid grid-cols-2 gap-3">
+                    {/* Cancel Booking Button */}
                     <button
                       disabled={restrictedStatuses.includes(
                         viewingBooking.status,
@@ -427,9 +452,16 @@ export default function MyBookings() {
                     >
                       Cancel Booking
                     </button>
+
+                    {/* View Quotes / Pay Button */}
                     <button
                       onClick={() => setActiveStep("quotes")}
-                      className="flex items-center justify-center gap-2 bg-gray-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-blue-600 transition-all shadow-lg shadow-gray-200"
+                      disabled={viewingBooking.paymentStatus === "paid"} // Prevent viewing quotes if already paid
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm shadow-lg transition-all ${
+                        viewingBooking.paymentStatus === "paid"
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-gray-900 text-white hover:bg-blue-600 shadow-gray-200"
+                      }`}
                     >
                       View {viewingBooking.driverQuote?.length || 0} Quotes{" "}
                       <ArrowRight size={16} />
@@ -649,16 +681,12 @@ export default function MyBookings() {
                       <input
                         type="password"
                         placeholder="Enter Gateway Password"
-                        value={paymentPassword}
-                        onChange={(e) => setPaymentPassword(e.target.value)}
                         className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                       />
                     </div>
                     <button
                       disabled={
-                        !selectedMethod ||
-                        !paymentPassword ||
-                        confirmAndPayMutation.isPending
+                        !selectedMethod || confirmAndPayMutation.isPending
                       }
                       onClick={() =>
                         confirmAndPayMutation.mutate({
@@ -680,6 +708,80 @@ export default function MyBookings() {
                   </div>
                 </div>
               )}
+
+              {/* STEP 4: PAYMENT */}
+              {/* {activeStep === "payment" && selectedQuote && (
+                <div className="space-y-6">
+                  <div className="bg-gray-100 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                        Final Amount
+                      </p>
+                      <p className="text-2xl font-black text-gray-900">
+                        {calculateTotal(selectedQuote.currentAmount)} TK
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-gray-400">
+                        Base: {selectedQuote.currentAmount} TK
+                      </p>
+                      <p className="text-[10px] font-bold text-blue-500">
+                        Service Fee: 5%
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black uppercase text-gray-500 mb-3 block">
+                      Select Payment Method
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {paymentMethods.map((m) => (
+                        <button
+                          key={m.id}
+                          onClick={() => setSelectedMethod(m.id)}
+                          className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 bg-white ${
+                            selectedMethod === m.id
+                              ? "border-blue-500 bg-blue-50 shadow-md"
+                              : "border-gray-100 grayscale opacity-60"
+                          }`}
+                        >
+                          <img
+                            src={m.logo}
+                            className="h-8 w-auto object-contain"
+                          />
+                          <span className="text-[10px] font-black uppercase">
+                            {m.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={
+                      !selectedMethod || confirmAndPayMutation.isPending
+                    }
+                    onClick={() =>
+                      confirmAndPayMutation.mutate({
+                        bookingId: viewingBooking._id,
+                        quoteId: selectedQuote._id,
+                        payload: {
+                          bookingId: viewingBooking._id,
+                          amount: calculateTotal(selectedQuote.currentAmount),
+                          paymentMethod: selectedMethod,
+                        },
+                      })
+                    }
+                    className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-[2px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+                  >
+                    {confirmAndPayMutation.isPending
+                      ? "Processing..."
+                      : "Confirm & Pay Now"}
+                  </button>
+                 
+                </div>
+              )} */}
             </div>
           </div>
         </div>
