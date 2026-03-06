@@ -252,7 +252,7 @@ export default function CurrentTrip() {
   const [driverId, setDriverId] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [otp, setOtp] = useState("");
-  const [rideStarted, setRideStarted] = useState(false);
+  const [rideStarted, setRideStarted] = useState();
   const [currentTrip, setCurrentTrip] = useState(null);
 
   // ================= FETCH DRIVER ID =================
@@ -301,7 +301,7 @@ export default function CurrentTrip() {
   // ================= START RIDE MUTATION =================
   const mutationStartRide = useMutation({
     mutationFn: () =>
-      axiosSecure.post(`/drivers/${driverId}/ride-start/${currentTrip._id}`),
+      axiosSecure.patch(`/drivers/${driverId}/ride-start/${currentTrip._id}`),
     onSuccess: () => {
       toast.success("Ride started successfully");
       setRideStarted(true);

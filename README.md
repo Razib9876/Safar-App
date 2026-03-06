@@ -22,8 +22,7 @@ Safar is a full-stack ride booking system with User, Driver, and Admin roles.
 
 ## Live Demo
 
-Frontend: https://yourapp.vercel.app  
-Backend: https://yourapi.onrender.com
+Frontend: https://safarapps.netlify.app/
 
 ## Setup
 
