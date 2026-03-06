@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PendingTrips from "./PendingTrips";
 import CompletedTrips from "./CompletedTrips";
 import PendingBooking from "./PendingTrips";
+import CurrentTrip from "./CurrentTrip";
 
 export default function DriverDashboard() {
   return (
