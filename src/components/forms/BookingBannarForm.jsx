@@ -212,7 +212,7 @@ const BookingForm = ({ driver, onClose }) => {
 
   return (
     <div className="relative">
-      {mongoLoading && <p className="text-black">loading....</p>}{" "}
+      {mongoLoading && <p className="text-black"></p>}{" "}
       {/*if need loading can set here*/}
       <form
         ref={formRef}
