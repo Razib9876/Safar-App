@@ -173,7 +173,7 @@ const Bannar = () => {
   }, [enableTransition]);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden">
       <Navbar />
 
       <div

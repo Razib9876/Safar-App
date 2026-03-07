@@ -92,7 +92,7 @@ export default function MyBookings() {
       return res.data.data || [];
     },
   });
-
+  console.log(bookings);
   // ================= MUTATIONS =================
   // const cancelMutation = useMutation({
   //   mutationFn: (id) => axiosSecure.patch(`/bookings/to-rejected/${id}`),
@@ -357,6 +357,7 @@ export default function MyBookings() {
                 <div className="space-y-6">
                   {/* Trip Summary Card */}
                   <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <h1>Complete OTP {viewingBooking.completionOtp}</h1>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-gray-400 uppercase">
