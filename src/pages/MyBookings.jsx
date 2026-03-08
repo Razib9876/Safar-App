@@ -123,10 +123,16 @@ export default function MyBookings() {
   //   },
   // });
   const confirmAndPayMutation = useMutation({
-    mutationFn: async ({ bookingId, quoteId, amount, paymentMethod }) => {
-      // Get driverId from selectedQuote
-      const driverId = selectedQuote?.driverId?._id || selectedQuote?.driverId;
+    mutationFn: async ({
+      bookingId,
+      quoteId,
+      driverId,
+      amount,
+      paymentMethod,
+    }) => {
       if (!driverId) throw new Error("Driver ID is missing");
+      if (!amount || !paymentMethod)
+        throw new Error("Amount or payment method missing");
 
       return axiosSecure.post(`/payments/initiate`, {
         bookingId,
