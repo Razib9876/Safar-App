@@ -59,7 +59,8 @@ export default function RejectedBooking() {
     assignMutation.mutate({ bookingId, driverId: selectedDriver._id });
   };
 
-  if (isLoading) return <div className="p-6 text-center">Loading...</div>;
+  // if (isLoading) return <div className="p-6 text-center">Loading...</div>;
+  if (isLoading) return <div className="p-6 text-center"></div>;
 
   // Filter drivers by search
   const filteredDrivers = drivers.filter(

@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../services/axiosSecure";
 import toast from "react-hot-toast";
 import HeroPages from "../components/AboutPages/HeroPages";
+import { AlertTriangle } from "lucide-react";
 import {
   X,
   ChevronLeft,
@@ -93,31 +94,7 @@ export default function MyBookings() {
     },
   });
   console.log(bookings);
-  // ================= MUTATIONS =================
-  // const cancelMutation = useMutation({
-  //   mutationFn: (id) => axiosSecure.patch(`/bookings/to-rejected/${id}`),
-  //   onSuccess: () => {
-  //     toast.success("Booking cancelled");
-  //     setViewingBooking(null);
-  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
-  //   },
-  // });
 
-  // const confirmAndPayMutation = useMutation({
-  //   mutationFn: async ({ bookingId, quoteId, payload }) => {
-  //     await axiosSecure.patch(
-  //       `/bookings/${bookingId}/confirm-booking/${quoteId}`,
-  //     );
-  //     return axiosSecure.post(`/payments/initiate`, payload);
-  //   },
-  //   onSuccess: () => {
-  //     toast.success("Payment Successful! Trip Confirmed.");
-  //     closeModals();
-  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
-  //   },
-  //   onError: (err) =>
-  //     toast.error(err.response?.data?.message || "Transaction failed"),
-  // });
   // ================= MUTATIONS =================
   const cancelMutation = useMutation({
     mutationFn: (bookingId) =>
@@ -357,7 +334,21 @@ export default function MyBookings() {
                 <div className="space-y-6">
                   {/* Trip Summary Card */}
                   <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-                    <h1>Complete OTP {viewingBooking.completionOtp}</h1>
+                    {viewingBooking?.completionOtp && (
+                      <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl">
+                        <h1 className="text-lg font-bold text-gray-800">
+                          Complete OTP: {viewingBooking.completionOtp}
+                        </h1>
+
+                        <div className="flex items-start gap-2 mt-2 text-yellow-700 text-xs font-medium">
+                          <AlertTriangle size={16} className="mt-0.5" />
+                          <p>
+                            Don't share this OTP before the trip is completed.
+                            Share it only after reaching your destination.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
                         <label className="text-[10px] font-bold text-gray-400 uppercase">
@@ -709,80 +700,6 @@ export default function MyBookings() {
                   </div>
                 </div>
               )}
-
-              {/* STEP 4: PAYMENT */}
-              {/* {activeStep === "payment" && selectedQuote && (
-                <div className="space-y-6">
-                  <div className="bg-gray-100 p-4 rounded-2xl flex justify-between items-center">
-                    <div>
-                      <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                        Final Amount
-                      </p>
-                      <p className="text-2xl font-black text-gray-900">
-                        {calculateTotal(selectedQuote.currentAmount)} TK
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-gray-400">
-                        Base: {selectedQuote.currentAmount} TK
-                      </p>
-                      <p className="text-[10px] font-bold text-blue-500">
-                        Service Fee: 5%
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-black uppercase text-gray-500 mb-3 block">
-                      Select Payment Method
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      {paymentMethods.map((m) => (
-                        <button
-                          key={m.id}
-                          onClick={() => setSelectedMethod(m.id)}
-                          className={`p-3 rounded-xl border-2 transition-all flex flex-col items-center gap-2 bg-white ${
-                            selectedMethod === m.id
-                              ? "border-blue-500 bg-blue-50 shadow-md"
-                              : "border-gray-100 grayscale opacity-60"
-                          }`}
-                        >
-                          <img
-                            src={m.logo}
-                            className="h-8 w-auto object-contain"
-                          />
-                          <span className="text-[10px] font-black uppercase">
-                            {m.name}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    disabled={
-                      !selectedMethod || confirmAndPayMutation.isPending
-                    }
-                    onClick={() =>
-                      confirmAndPayMutation.mutate({
-                        bookingId: viewingBooking._id,
-                        quoteId: selectedQuote._id,
-                        payload: {
-                          bookingId: viewingBooking._id,
-                          amount: calculateTotal(selectedQuote.currentAmount),
-                          paymentMethod: selectedMethod,
-                        },
-                      })
-                    }
-                    className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-[2px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
-                  >
-                    {confirmAndPayMutation.isPending
-                      ? "Processing..."
-                      : "Confirm & Pay Now"}
-                  </button>
-                 
-                </div>
-              )} */}
             </div>
           </div>
         </div>
