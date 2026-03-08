@@ -108,10 +108,35 @@ export default function MyBookings() {
       toast.error(err.response?.data?.message || "Failed to cancel booking");
     },
   });
+  // const confirmAndPayMutation = useMutation({
+  //   mutationFn: async ({ payload }) => {
+  //     // Only call the payment endpoint
+  //     return axiosSecure.post(`/payments/initiate`, payload);
+  //   },
+  //   onSuccess: () => {
+  //     toast.success("Payment Successful! Trip Confirmed.");
+  //     closeModals();
+  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
+  //   },
+  //   onError: (err) => {
+  //     toast.error(err.response?.data?.message || "Transaction failed");
+  //   },
+  // });
   const confirmAndPayMutation = useMutation({
-    mutationFn: async ({ payload }) => {
-      // Only call the payment endpoint
-      return axiosSecure.post(`/payments/initiate`, payload);
+    mutationFn: async ({
+      bookingId,
+      quoteId,
+      driverId,
+      amount,
+      paymentMethod,
+    }) => {
+      return axiosSecure.post(`/payments/initiate`, {
+        bookingId,
+        quoteId,
+        driverId,
+        amount,
+        paymentMethod,
+      });
     },
     onSuccess: () => {
       toast.success("Payment Successful! Trip Confirmed.");
@@ -122,6 +147,7 @@ export default function MyBookings() {
       toast.error(err.response?.data?.message || "Transaction failed");
     },
   });
+
   // ================= LOGIC =================
   const closeModals = () => {
     setViewingBooking(null);
