@@ -153,6 +153,14 @@ export default function MyBookings() {
       );
     },
   });
+
+  // console.log({
+  //   bookingId: viewingBooking?._id,
+  //   quoteId: selectedQuote._id,
+  //   driverId: selectedQuote.driverId,
+  //   amount: calculateTotal(selectedQuote.currentAmount),
+  //   paymentMethod: selectedMethod,
+  // });
   // ================= LOGIC =================
   const closeModals = () => {
     setViewingBooking(null);
@@ -715,11 +723,11 @@ export default function MyBookings() {
                         confirmAndPayMutation.mutate({
                           bookingId: viewingBooking._id,
                           quoteId: selectedQuote._id,
-                          payload: {
-                            bookingId: viewingBooking._id,
-                            amount: calculateTotal(selectedQuote.currentAmount),
-                            paymentMethod: selectedMethod,
-                          },
+                          driverId:
+                            selectedQuote.driverId._id ||
+                            selectedQuote.driverId,
+                          amount: calculateTotal(selectedQuote.currentAmount),
+                          paymentMethod: selectedMethod,
                         })
                       }
                       className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-[2px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
