@@ -123,13 +123,11 @@ export default function MyBookings() {
   //   },
   // });
   const confirmAndPayMutation = useMutation({
-    mutationFn: async ({
-      bookingId,
-      quoteId,
-      driverId,
-      amount,
-      paymentMethod,
-    }) => {
+    mutationFn: async ({ bookingId, quoteId, amount, paymentMethod }) => {
+      // Get driverId from selectedQuote
+      const driverId = selectedQuote?.driverId?._id || selectedQuote?.driverId;
+      if (!driverId) throw new Error("Driver ID is missing");
+
       return axiosSecure.post(`/payments/initiate`, {
         bookingId,
         quoteId,
@@ -144,10 +142,11 @@ export default function MyBookings() {
       queryClient.invalidateQueries(["my-bookings", userEmail]);
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || "Transaction failed");
+      toast.error(
+        err.response?.data?.message || err.message || "Transaction failed",
+      );
     },
   });
-
   // ================= LOGIC =================
   const closeModals = () => {
     setViewingBooking(null);
