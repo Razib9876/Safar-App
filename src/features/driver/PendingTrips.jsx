@@ -233,21 +233,6 @@ export default function PendingBooking() {
                   {new Date(booking.dateTo).toLocaleDateString()} |{" "}
                   {formatTime12Hour(booking.timeTo)}
                 </p>
-                {/* <p>
-                  <strong>Amount:</strong>{" "}
-                  {driverQuote ? (
-                    <>
-                      {driverQuote.previousAmount && (
-                        <span className="line-through mr-1">
-                          {driverQuote.previousAmount}
-                        </span>
-                      )}
-                      <span>{driverQuote.currentAmount}</span>
-                    </>
-                  ) : (
-                    "-"
-                  )}
-                </p> */}
 
                 <p>
                   <strong>Amount:</strong>{" "}

@@ -1,8 +1,6 @@
-// src/hooks/useAuth.js
 import { useContext } from "react";
-import { AuthContext } from "../providers/AuthProviders.jsx"; // make sure the path is correct
+import { AuthContext } from "../providers/AuthProviders.jsx";
 
-// Custom hook to access AuthContext
 const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

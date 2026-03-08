@@ -165,39 +165,6 @@ export default function DashboardLayout() {
                 </li>
               )}
 
-              {/* My Booking (rider/admin/driver)
-              {(user.role === "rider" ||
-                user.role === "admin" ||
-                user.role === "driver") && (
-                <li>
-                  <Link to="/dashboard/my-trips">
-                    <button
-                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                      data-tip="My Bookings"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="my-1.5 inline-block size-4 mr-2"
-                      >
-                        <rect x="8" y="3" width="8" height="4" rx="1"></rect>
-                        <path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
-                        <path d="M9 12h6"></path>
-                        <path d="M9 16h6"></path>
-                      </svg>
-                      <span className="is-drawer-close:hidden">
-                        My Bookings
-                      </span>
-                    </button>
-                  </Link>
-                </li>
-              )} */}
-
               {/* Trip (driver only) */}
               {user.role === "driver" && (
                 <li>

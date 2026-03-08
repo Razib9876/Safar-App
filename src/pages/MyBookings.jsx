@@ -108,20 +108,7 @@ export default function MyBookings() {
       toast.error(err.response?.data?.message || "Failed to cancel booking");
     },
   });
-  // const confirmAndPayMutation = useMutation({
-  //   mutationFn: async ({ payload }) => {
-  //     // Only call the payment endpoint
-  //     return axiosSecure.post(`/payments/initiate`, payload);
-  //   },
-  //   onSuccess: () => {
-  //     toast.success("Payment Successful! Trip Confirmed.");
-  //     closeModals();
-  //     queryClient.invalidateQueries(["my-bookings", userEmail]);
-  //   },
-  //   onError: (err) => {
-  //     toast.error(err.response?.data?.message || "Transaction failed");
-  //   },
-  // });
+
   const confirmAndPayMutation = useMutation({
     mutationFn: async ({
       bookingId,
@@ -154,13 +141,6 @@ export default function MyBookings() {
     },
   });
 
-  // console.log({
-  //   bookingId: viewingBooking?._id,
-  //   quoteId: selectedQuote._id,
-  //   driverId: selectedQuote.driverId,
-  //   amount: calculateTotal(selectedQuote.currentAmount),
-  //   paymentMethod: selectedMethod,
-  // });
   // ================= LOGIC =================
   const closeModals = () => {
     setViewingBooking(null);
