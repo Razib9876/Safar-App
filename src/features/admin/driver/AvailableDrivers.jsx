@@ -202,7 +202,7 @@ const AvailableDriver = () => {
     );
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-20 px-4 sm:px-6 lg:px-8 pt-6">
+    <div className="w-full max-w-7xl mx-auto pb-20  sm:px-2 lg:px-3 pt-6">
       {/* 1. INDUSTRIAL HEADER */}
       <div className="mb-8 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
