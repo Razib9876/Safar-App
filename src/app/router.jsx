@@ -23,6 +23,7 @@ import MyBookings from "../pages/MyBookings";
 import NotFound from "../components/common/NotFound";
 import BeDriver from "../pages/BeDriver";
 import DashboardRedirect from "../components/Layout/DashboardRedirect";
+import UserManager from "../features/admin/user/UserManager";
 
 export const router = createBrowserRouter([
   {
@@ -64,6 +65,14 @@ export const router = createBrowserRouter([
         element: (
           <AdminRoute>
             <DriverManagement />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "user-management",
+        element: (
+          <AdminRoute>
+            <UserManager></UserManager>
           </AdminRoute>
         ),
       },

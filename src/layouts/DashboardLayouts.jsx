@@ -29,6 +29,7 @@ export default function DashboardLayout() {
     if (path === "/dashboard/users") return "Manage Users";
     if (path === "/dashboard/rides") return "Manage Rides";
     if (path === "/dashboard/driver-management") return "Driver Management";
+    if (path === "/dashboard/user-management") return "User Management";
     if (path === "/dashboard/") return "All Trip";
     if (path === "/dashboard/") return "Trip Management";
     if (path === "/dashboard/my-trips") return "My Bookings";
@@ -159,6 +160,39 @@ export default function DashboardLayout() {
                       </svg>
                       <span className="is-drawer-close:hidden">
                         Driver Management
+                      </span>
+                    </button>
+                  </Link>
+                </li>
+              )}
+              {/* user Manager (admin only) */}
+              {user.role === "admin" && (
+                <li>
+                  <Link to="/dashboard/user-management">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="User Management"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M3 21v-2a4 4 0 0 1 4-4h4"></path>
+                        <circle cx="18" cy="17" r="3"></circle>
+                        <path d="M18 14v1"></path>
+                        <path d="M18 19v1"></path>
+                        <path d="M15 17h1"></path>
+                        <path d="M20 17h1"></path>
+                      </svg>
+                      <span className="is-drawer-close:hidden">
+                        User Management
                       </span>
                     </button>
                   </Link>

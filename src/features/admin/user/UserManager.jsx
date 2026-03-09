@@ -1,17 +1,13 @@
 import React from "react";
-import PendingDriver from "./PendingDriver";
-import AvailableDriver from "./AvailableDrivers";
-import SuspendedDriver from "./SuspendedDriver";
-import RejectedDriver from "./RejectedDrivers";
-import OnRideDriver from "./OnRideDrivers";
 import useDriverCount from "../../../hooks/useDriverCount";
+import AllUserControll from "./All-userControll";
+import AdminControll from "./AdminControll";
+import DriverControll from "./DriverControll";
 
-const DriverManagement = () => {
+const UserManager = () => {
   const pendingCount = useDriverCount("pending");
   const availableCount = useDriverCount("available");
   const suspendedCount = useDriverCount("suspended");
-  const rejectedCount = useDriverCount("rejected");
-  const onRideCount = useDriverCount("on-ride");
 
   return (
     <div>
@@ -24,7 +20,7 @@ const DriverManagement = () => {
           aria-label={`Pending (${pendingCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <PendingDriver />
+          <AllUserControll />
         </div>
 
         {/* ================= AVAILABLE ================= */}
@@ -35,7 +31,7 @@ const DriverManagement = () => {
           aria-label={`Available (${availableCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <AvailableDriver />
+          <AdminControll />
         </div>
 
         {/* ================= SUSPENDED ================= */}
@@ -46,33 +42,11 @@ const DriverManagement = () => {
           aria-label={`Suspended (${suspendedCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <SuspendedDriver />
-        </div>
-
-        {/* ================= REJECTED ================= */}
-        <input
-          type="radio"
-          name="my_tabs_3"
-          className="tab"
-          aria-label={`Rejected (${rejectedCount})`}
-        />
-        <div className="tab-content bg-base-100 border-base-300 ">
-          <RejectedDriver />
-        </div>
-
-        {/* ================= ON RIDE ================= */}
-        <input
-          type="radio"
-          name="my_tabs_3"
-          className="tab"
-          aria-label={`On Ride (${onRideCount})`}
-        />
-        <div className="tab-content bg-base-100 border-base-300 ">
-          <OnRideDriver />
+          <DriverControll />
         </div>
       </div>
     </div>
   );
 };
 
-export default DriverManagement;
+export default UserManager;

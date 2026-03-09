@@ -18,6 +18,7 @@ import {
   FiCheck,
   FiX,
   FiMail,
+  FiZap,
 } from "react-icons/fi";
 
 // Note: Ensure axiosSecure is defined or replace with your axios instance
@@ -103,8 +104,34 @@ export default function AdminBookings() {
 
   return (
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-2xl font-bold mb-6">Logistics Control Tower</h1>
+      {/* Parent container with 0 padding on mobile, restored on small screens */}
+      <div className="px-0 sm:px-6 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          {/* Brand Section */}
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-200">
+              <FiZap size={28} className="animate-pulse" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
+                Logistics <span className="text-orange-600">Control Tower</span>
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
+                System_Status: Active • Tracking {bookings.length} Requests
+              </p>
+            </div>
+          </div>
 
+          {/* Metric Badge */}
+          <div className="flex items-center">
+            <div className="px-6 py-3 bg-slate-900 rounded-2xl border-r-4 border-orange-600 shadow-xl">
+              <span className="text-white text-[11px] font-black uppercase tracking-[0.2em]">
+                Priority_Queue: {bookings.length}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* ================= DESKTOP TABLE ================= */}
       <div className="hidden lg:block overflow-x-auto bg-white shadow-sm rounded-xl border border-gray-200">
         <table className="min-w-full text-sm">
@@ -188,7 +215,105 @@ export default function AdminBookings() {
       </div>
 
       {/* ================= MOBILE VIEW (REMOVED FOR BREVITY, SAME AS TABLE LOGIC) ================= */}
+      {/* ================= MOBILE VIEW ================= */}
+      <div className="lg:hidden w-full space-y-4 px-0">
+        {" "}
+        {/* Use px-0 if you want it edge-to-edge */}
+        {bookings.map((booking) => (
+          <div
+            key={booking._id}
+            onClick={() => setSelectedBooking(booking)}
+            className="w-full bg-white p-4 rounded-xl border border-gray-200 shadow-sm active:bg-gray-50 transition-colors"
+          >
+            {/* Top Row: User Info & Actions */}
+            <div className="flex justify-between items-start w-full mb-3">
+              <div className="max-w-[70%]">
+                <h3 className="font-bold text-slate-900 truncate">
+                  {booking.userId?.name}
+                </h3>
+                <p className="text-[11px] text-slate-500 truncate">
+                  {booking.userId?.email}
+                </p>
+              </div>
+              <div className="relative" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={() =>
+                    setOpenDropdown(
+                      openDropdown === booking._id ? null : booking._id,
+                    )
+                  }
+                  className="p-2 bg-slate-100 rounded-full hover:bg-slate-200"
+                >
+                  <FiMoreVertical size={18} />
+                </button>
 
+                {openDropdown === booking._id && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-xl rounded-xl z-50 border-2 border-slate-50 py-1">
+                    <button
+                      className="flex items-center gap-3 px-4 py-3 w-full text-sm font-semibold border-b border-slate-50"
+                      onClick={() => handleAction("Public", booking)}
+                    >
+                      <FiEye className="text-blue-600" /> Public
+                    </button>
+                    <button
+                      className="flex items-center gap-3 px-4 py-3 w-full text-sm font-semibold border-b border-slate-50"
+                      onClick={() => handleAction("Private", booking)}
+                    >
+                      <FiLock className="text-slate-600" /> Private
+                    </button>
+                    <button
+                      className="flex items-center gap-3 px-4 py-3 w-full text-sm font-bold text-red-600"
+                      onClick={() => handleAction("Cancel", booking)}
+                    >
+                      <FiXCircle /> Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Middle Row: Specs */}
+            <div className="flex items-center justify-between gap-2 mb-4">
+              <div className="flex flex-col">
+                <span className="text-[9px] font-bold text-slate-400 uppercase">
+                  Vehicle
+                </span>
+                <span className="text-xs font-black text-blue-700 uppercase">
+                  {booking.vehicleType}
+                </span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-[9px] font-bold text-slate-400 uppercase mb-1">
+                  Status
+                </span>
+                <span className="px-2 py-0.5 text-[9px] font-black uppercase rounded bg-yellow-100 text-yellow-700">
+                  {booking.status}
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom Row: Route (Stacked for better fit) */}
+            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+              <div className="flex items-center gap-3 text-xs">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <div className="w-[1px] h-3 bg-slate-300"></div>
+                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                </div>
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
+                  <span className="truncate font-semibold text-slate-700">
+                    {booking.fromLocation}
+                  </span>
+                  <span className="truncate font-semibold text-slate-700">
+                    {booking.toLocation}
+                  </span>
+                </div>
+                <FiTruck className="text-slate-300 ml-auto" size={20} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
       {/* ================= INDUSTRIAL MODAL ================= */}
       {selectedBooking && (
         <div

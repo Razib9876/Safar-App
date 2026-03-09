@@ -1,8 +1,8 @@
-import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import SafarLogo from "../common/SafarLogo";
 import { FaUserCircle } from "react-icons/fa";
+import { Link, NavLink } from "react-router-dom";
 
 /* Active link style */
 const navStyle = ({ isActive }) =>
@@ -13,9 +13,13 @@ export default function Navbar() {
 
   const [show, setShow] = useState(true);
   const [scroll, setScroll] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const role = user?.role || "guest";
 
+  // useEffect(() => {
+  //   setMenuOpen(false);
+  // }, [location.pathname]);
   /* Scroll detect */
   useEffect(() => {
     const handleScroll = () => {
@@ -80,7 +84,7 @@ export default function Navbar() {
       {/* LEFT */}
       <div className="navbar-start">
         {/* Mobile Menu */}
-        <div className="dropdown">
+        {/* <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -108,6 +112,52 @@ export default function Navbar() {
               </li>
             ))}
           </ul>
+        </div> */}
+        <div className="relative inline-block lg:hidden">
+          {/* Trigger */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="p-2 rounded-md hover:bg-gray-100 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h8m-8 6h16"
+              />
+            </svg>
+          </button>
+
+          {/* Dropdown */}
+          {menuOpen && (
+            <ul className="absolute left-0 z-50 mt-2 w-52 rounded-lg border border-gray-100 bg-white p-2 shadow-xl">
+              {links.map((item) => (
+                <li key={item.path}>
+                  <NavLink
+                    to={item.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={({ isActive }) =>
+                      `block rounded-md px-4 py-2 text-sm transition-colors hover:bg-gray-100 
+              ${
+                isActive
+                  ? "font-semibold text-blue-600 bg-blue-50"
+                  : "text-gray-700"
+              }`
+                    }
+                  >
+                    {item.name}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Logo */}

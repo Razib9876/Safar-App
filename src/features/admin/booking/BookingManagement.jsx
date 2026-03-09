@@ -16,7 +16,7 @@ const BookingManagement = () => {
           aria-label="Pending"
           defaultChecked
         />
-        <div className="tab-content bg-base-100 border-base-300 p-6 ">
+        <div className="tab-content bg-base-100 border-base-300 ">
           <PendingBooking></PendingBooking>
         </div>
         <input
@@ -25,7 +25,7 @@ const BookingManagement = () => {
           className="tab"
           aria-label="All Bookings"
         />
-        <div className="tab-content bg-base-100 border-base-300 p-6">
+        <div className="tab-content bg-base-100 border-base-300 ">
           <PendingTrips></PendingTrips>
         </div>
 
@@ -35,7 +35,7 @@ const BookingManagement = () => {
           className="tab"
           aria-label="Completed"
         />
-        <div className="tab-content bg-base-100 border-t-base-300  p-6   min-h-screen">
+        <div className="tab-content bg-base-100 border-base-300 pt-6 px-0 pb-0 sm:p-6">
           <CompletedBooking />
         </div>
 
@@ -45,7 +45,7 @@ const BookingManagement = () => {
           className="tab"
           aria-label="Rejected"
         />
-        <div className="tab-content bg-base-100 border-base-300 p-6">
+        <div className="tab-content bg-base-100 border-base-300 pt-6 px-0 pb-0 sm:p-6">
           <RejectedBooking></RejectedBooking>
         </div>
       </div>
