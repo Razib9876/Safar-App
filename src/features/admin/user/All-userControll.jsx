@@ -236,7 +236,7 @@ export default function AllUsers() {
   return (
     <div className="w-full pb-10">
       {/* Header Section */}
-      <div className="px-0 sm:px-6 mb-10">
+      <div className="p-10 sm:px-6 mb-10">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 border-2 border-orange-200">
