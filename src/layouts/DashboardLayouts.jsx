@@ -490,16 +490,17 @@ export default function DashboardLayout() {
                   </Link>
                 </li>
               )}
-              {/* Prifile */}
+              {/* Profile */}
               {(user.role === "rider" ||
                 user.role === "admin" ||
                 user.role === "driver") && (
                 <li>
-                  <Link to="/dashboard">
+                  <Link to="/dashboard/profile">
                     <button
                       className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                      data-tip="Payments"
+                      data-tip="Profile"
                     >
+                      {/* User / Profile Icon */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -510,12 +511,11 @@ export default function DashboardLayout() {
                         stroke="currentColor"
                         className="my-1.5 inline-block size-4 mr-2"
                       >
-                        <path d="M20 7h-9"></path>
-                        <path d="M14 17H5"></path>
-                        <circle cx="17" cy="17" r="3"></circle>
-                        <circle cx="7" cy="7" r="3"></circle>
+                        <circle cx="12" cy="8" r="4"></circle> {/* Head */}
+                        <path d="M6 20v-2a6 6 0 0112 0v2"></path>{" "}
+                        {/* Shoulders/body */}
                       </svg>
-                      <span className="is-drawer-close:hidden">Payments</span>
+                      <span className="is-drawer-close:hidden">Profile</span>
                     </button>
                   </Link>
                 </li>
