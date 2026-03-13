@@ -119,45 +119,36 @@
 // ____________________________________________________________________________________________________________________
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axiosSecure from "../../api/axiosSecure"; // Adjust this path to where your axiosSecure.js is located
 import {
   FiUser,
   FiTruck,
   FiCalendar,
-  FiExternalLink,
   FiSearch,
   FiShield,
-  FiClipboard,
-  FiCreditCard,
   FiArchive,
 } from "react-icons/fi";
 
 // Fetch all users
 const fetchAllUsers = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/users`);
+  const res = await axiosSecure.get(`/users`);
   return res.data.data || [];
 };
 
 // Fetch driver by user ID
 const fetchDriverByUserId = async (userId) => {
-  const res = await axios.get(
-    `${import.meta.env.VITE_API_URL}/drivers/user/${userId}`,
-  );
+  const res = await axiosSecure.get(`/drivers/user/${userId}`);
   return res.data || null;
 };
 
 // Promote user to admin
 const promoteUser = async (userId) => {
-  await axios.patch(
-    `${import.meta.env.VITE_API_URL}/users/${userId}/promote-admin`,
-  );
+  await axiosSecure.patch(`/users/${userId}/promote-admin`);
 };
 
 // Demote admin to user
 const demoteUser = async (userId) => {
-  await axios.patch(
-    `${import.meta.env.VITE_API_URL}/users/${userId}/demote-user`,
-  );
+  await axiosSecure.patch(`/users/${userId}/demote-user`);
 };
 
 export default function AllUsers() {
@@ -172,33 +163,46 @@ export default function AllUsers() {
     queryFn: fetchAllUsers,
   });
 
-  const promoteMutation = useMutation(promoteUser, {
-    onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+  // FIXED: useMutation now takes a single object in TanStack Query v5
+  const promoteMutation = useMutation({
+    mutationFn: promoteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["all-users"]);
+      setSelectedUser(null); // Optional: close modal on success
+    },
   });
 
-  const demoteMutation = useMutation(demoteUser, {
-    onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+  const demoteMutation = useMutation({
+    mutationFn: demoteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["all-users"]);
+      setSelectedUser(null); // Optional: close modal on success
+    },
   });
 
   // Fetch driver data only when a driver row is selected
   useEffect(() => {
-    const fetchDriverData = async () => {
+    let isMounted = true;
+
+    const getDriverData = async () => {
       if (!selectedUser || selectedUser.role !== "driver") {
-        // Defer state update to avoid synchronous setState in effect
-        setTimeout(() => setDriverData(null), 0);
+        setDriverData(null);
         return;
       }
 
       try {
         const data = await fetchDriverByUserId(selectedUser._id);
-        setDriverData(data);
+        if (isMounted) setDriverData(data);
       } catch (error) {
         console.error("Failed to fetch driver data:", error);
-        setDriverData(null);
+        if (isMounted) setDriverData(null);
       }
     };
 
-    fetchDriverData();
+    getDriverData();
+    return () => {
+      isMounted = false;
+    };
   }, [selectedUser]);
 
   // Close modal on outside click
@@ -234,7 +238,6 @@ export default function AllUsers() {
       {/* Header Section */}
       <div className="px-0 sm:px-6 mb-10">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-          {/* Title Section */}
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 border-2 border-orange-200">
               <FiArchive size={28} />
@@ -249,7 +252,6 @@ export default function AllUsers() {
             </div>
           </div>
 
-          {/* Search Bar */}
           <div className="relative group w-full lg:w-96">
             <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
               <FiSearch
@@ -365,7 +367,6 @@ export default function AllUsers() {
 
             {/* Modal Body */}
             <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Column 1: User Info */}
               <div className="lg:col-span-2 space-y-8">
                 <section>
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -394,7 +395,6 @@ export default function AllUsers() {
                   </div>
                 </section>
 
-                {/* Driver Info if role is driver */}
                 {selectedUser.role === "driver" && driverData && (
                   <section>
                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -403,6 +403,7 @@ export default function AllUsers() {
                     <div className="border border-slate-200 rounded-[24px] p-6 flex flex-col md:flex-row gap-6">
                       <img
                         src={driverData.photo}
+                        alt="Driver"
                         className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
                       />
                       <div className="flex-1 grid grid-cols-2 gap-y-4">
@@ -442,12 +443,14 @@ export default function AllUsers() {
                 )}
               </div>
 
-              {/* Column 2: Actions */}
               <div className="space-y-6">
                 {(selectedUser.role === "rider" ||
                   selectedUser.role === "admin") && (
                   <button
-                    className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                    disabled={
+                      promoteMutation.isLoading || demoteMutation.isLoading
+                    }
+                    className="w-full py-4 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
                     onClick={() => {
                       if (selectedUser.role === "rider") {
                         promoteMutation.mutate(selectedUser._id);
