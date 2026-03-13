@@ -1,8 +1,8 @@
 import React from "react";
 import useDriverCount from "../../../hooks/useDriverCount";
-import AllUserControll from "./All-userControll";
 import AdminControll from "./AdminControll";
 import DriverControll from "./DriverControll";
+import AllUsers from "./All-userControll";
 
 const UserManager = () => {
   const pendingCount = useDriverCount("pending");
@@ -20,7 +20,7 @@ const UserManager = () => {
           aria-label={`Pending (${pendingCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <AllUserControll />
+          <AllUsers></AllUsers>
         </div>
 
         {/* ================= AVAILABLE ================= */}
