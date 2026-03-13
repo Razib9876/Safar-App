@@ -794,24 +794,32 @@ export default function AllUsers() {
               </div>
 
               {/* Column 2: Actions */}
+              {/* Column 2: Actions */}
               <div className="space-y-6">
-                {(selectedUser.role === "rider" ||
-                  selectedUser.role === "admin") &&
-                  currentUserRole === "admin" && (
-                    <button
-                      className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
-                      onClick={() => {
-                        if (selectedUser.role === "rider") {
-                          promoteMutation.mutate(selectedUser._id);
-                        } else if (selectedUser.role === "admin") {
-                          demoteMutation.mutate(selectedUser._id);
-                        }
-                      }}
-                    >
-                      {selectedUser.role === "rider"
-                        ? "Make Admin"
-                        : "Make User"}
-                    </button>
+                {currentUserRole === "admin" &&
+                  selectedUser.role !== "driver" && (
+                    <div className="flex flex-col gap-4">
+                      {selectedUser.role !== "admin" && (
+                        <button
+                          className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                          onClick={() =>
+                            promoteMutation.mutate(selectedUser._id)
+                          }
+                        >
+                          Make Admin
+                        </button>
+                      )}
+                      {selectedUser.role === "admin" && (
+                        <button
+                          className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                          onClick={() =>
+                            demoteMutation.mutate(selectedUser._id)
+                          }
+                        >
+                          Make Rider
+                        </button>
+                      )}
+                    </div>
                   )}
               </div>
             </div>
