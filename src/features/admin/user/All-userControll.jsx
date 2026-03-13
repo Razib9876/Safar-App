@@ -470,7 +470,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../../../services/axiosSecure";
-import { FiUser, FiTruck, FiSearch } from "react-icons/fi";
+import {
+  FiUser,
+  FiTruck,
+  FiSearch,
+  FiShield,
+  FiCalendar,
+} from "react-icons/fi";
 
 // Fetch all users
 const fetchAllUsers = async () => {
@@ -566,7 +572,7 @@ export default function AllUsers() {
 
   const currentUserRole = localStorage
     .getItem("currentUserRole")
-    ?.toLowerCase(); // lowercase safe
+    ?.toLowerCase();
 
   if (isLoading)
     return (
@@ -678,7 +684,7 @@ export default function AllUsers() {
             ref={modalRef}
             className="bg-white w-full max-w-4xl min-h-screen sm:min-h-0 sm:rounded-[40px] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-300"
           >
-            {/* Header */}
+            {/* Modal Header */}
             <div className="bg-slate-900 p-6 sm:p-10 text-white flex justify-between items-start relative overflow-hidden">
               <div className="relative z-10">
                 <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em] mb-2">
@@ -688,11 +694,12 @@ export default function AllUsers() {
                   {selectedUser.name}
                 </h2>
                 <div className="flex gap-4 mt-4">
-                  <span className="flex items-center gap-2 text-xs font-bold bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/20 uppercase">
-                    {selectedUser.role}
+                  <span className="flex items-center gap-2 text-xs font-black bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+                    <FiCalendar className="text-blue-400" /> ID:{" "}
+                    {selectedUser._id.slice(-8)}
                   </span>
-                  <span className="flex items-center gap-2 text-xs font-bold bg-slate-50/10 text-slate-300 px-3 py-1.5 rounded-full border border-white/10 uppercase">
-                    {selectedUser.status}
+                  <span className="flex items-center gap-2 text-xs font-black bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/20 uppercase">
+                    {selectedUser.role}
                   </span>
                 </div>
               </div>
@@ -704,56 +711,109 @@ export default function AllUsers() {
               </button>
             </div>
 
-            {/* Body */}
-            <div className="p-6 sm:p-10 space-y-6">
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
-                  User ID
-                </p>
-                <p className="font-bold text-slate-900">{selectedUser._id}</p>
+            {/* Modal Body */}
+            <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Column 1: User Info */}
+              <div className="lg:col-span-2 space-y-8">
+                <section>
+                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <FiUser className="text-blue-600" /> Personal Info
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
+                        Name
+                      </p>
+                      <p className="font-bold text-slate-800">
+                        {selectedUser.name}
+                      </p>
+                      <p className="text-xs text-slate-500 truncate">
+                        {selectedUser._id}
+                      </p>
+                    </div>
+                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
+                        Status
+                      </p>
+                      <p className="font-bold text-slate-800">
+                        {selectedUser.status}
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Driver Info if role is driver */}
+                {selectedUser.role === "driver" && driverData && (
+                  <section>
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <FiShield className="text-emerald-600" /> Driver Info
+                    </h3>
+                    <div className="border border-slate-200 rounded-[24px] p-6 flex flex-col md:flex-row gap-6">
+                      {driverData.photo && (
+                        <img
+                          src={driverData.photo}
+                          className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
+                        />
+                      )}
+                      <div className="flex-1 grid grid-cols-2 gap-y-4">
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Operator
+                          </p>
+                          <p className="font-bold">{driverData.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Unit Type
+                          </p>
+                          <p className="font-bold text-blue-600 uppercase italic">
+                            {driverData.activeVehicle?.type || "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Registration
+                          </p>
+                          <p className="font-mono text-xs font-bold">
+                            {driverData.activeVehicle?.registrationNumber ||
+                              "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            License
+                          </p>
+                          <p className="font-mono text-xs font-bold">
+                            {driverData.drivingLicense?.number || "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                )}
               </div>
 
-              {/* Driver Info */}
-              {selectedUser.role === "driver" && driverData && (
-                <div className="border border-slate-200 rounded-[24px] p-6">
-                  <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <FiTruck className="text-blue-600" /> Driver Info
-                  </h3>
-                  <p className="font-bold text-slate-900">
-                    Vehicle: {driverData.activeVehicle?.type || "N/A"}
-                  </p>
-                  <p className="font-mono text-xs">
-                    Registration:{" "}
-                    {driverData.activeVehicle?.registrationNumber || "N/A"}
-                  </p>
-                  <p className="font-mono text-xs">
-                    License: {driverData.drivingLicense?.number || "N/A"}
-                  </p>
-                </div>
-              )}
-
-              {/* Buttons for rider/admin */}
-              {currentUserRole === "admin" &&
-                selectedUser.role !== "driver" && (
-                  <div className="flex gap-4">
-                    {selectedUser.role !== "admin" && (
-                      <button
-                        onClick={() => promoteMutation.mutate(selectedUser._id)}
-                        className="px-4 py-2 bg-emerald-500 text-white font-bold rounded"
-                      >
-                        Make Admin
-                      </button>
-                    )}
-                    {selectedUser.role === "admin" && (
-                      <button
-                        onClick={() => demoteMutation.mutate(selectedUser._id)}
-                        className="px-4 py-2 bg-red-500 text-white font-bold rounded"
-                      >
-                        Make Rider
-                      </button>
-                    )}
-                  </div>
-                )}
+              {/* Column 2: Actions */}
+              <div className="space-y-6">
+                {(selectedUser.role === "rider" ||
+                  selectedUser.role === "admin") &&
+                  currentUserRole === "admin" && (
+                    <button
+                      className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                      onClick={() => {
+                        if (selectedUser.role === "rider") {
+                          promoteMutation.mutate(selectedUser._id);
+                        } else if (selectedUser.role === "admin") {
+                          demoteMutation.mutate(selectedUser._id);
+                        }
+                      }}
+                    >
+                      {selectedUser.role === "rider"
+                        ? "Make Admin"
+                        : "Make User"}
+                    </button>
+                  )}
+              </div>
             </div>
           </div>
         </div>
