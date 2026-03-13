@@ -3,6 +3,7 @@ import useDriverCount from "../../../hooks/useDriverCount";
 import AdminControll from "./AdminControll";
 import DriverControll from "./DriverControll";
 import AllUsers from "./All-userControll";
+import AllAdmin from "./AllAdmin";
 
 const UserManager = () => {
   const pendingCount = useDriverCount("pending");
@@ -17,7 +18,7 @@ const UserManager = () => {
           type="radio"
           name="my_tabs_3"
           className="tab"
-          aria-label={`Pending (${pendingCount})`}
+          aria-label={`All (${pendingCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
           <AllUsers></AllUsers>
@@ -28,10 +29,10 @@ const UserManager = () => {
           type="radio"
           name="my_tabs_3"
           className="tab"
-          aria-label={`Available (${availableCount})`}
+          aria-label={`Admin (${availableCount})`}
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <AdminControll />
+          <AllAdmin />
         </div>
 
         {/* ================= SUSPENDED ================= */}
