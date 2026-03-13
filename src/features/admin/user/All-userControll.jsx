@@ -470,15 +470,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../../../services/axiosSecure";
-import {
-  FiUser,
-  FiTruck,
-  FiShield,
-  FiClipboard,
-  FiCreditCard,
-  FiExternalLink,
-  FiSearch,
-} from "react-icons/fi";
+import { FiUser, FiTruck, FiSearch } from "react-icons/fi";
 
 // Fetch all users
 const fetchAllUsers = async () => {
@@ -511,7 +503,6 @@ export default function AllUsers() {
   const [driverData, setDriverData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const modalRef = useRef();
-
   const queryClient = useQueryClient();
 
   const { data: users = [], isLoading } = useQuery({
@@ -519,18 +510,19 @@ export default function AllUsers() {
     queryFn: fetchAllUsers,
   });
 
-  // Promote/Demote mutations
   const promoteMutation = useMutation({
     mutationFn: promoteUser,
     onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+    onError: (err) => console.error(err),
   });
 
   const demoteMutation = useMutation({
     mutationFn: demoteUser,
     onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+    onError: (err) => console.error(err),
   });
 
-  // Get driver info if selected user is a driver
+  // Fetch driver data safely
   useEffect(() => {
     let isMounted = true;
 
@@ -544,7 +536,6 @@ export default function AllUsers() {
           if (isMounted) setDriverData(null);
         }
       } else {
-        // Safe async null update
         Promise.resolve().then(() => {
           if (isMounted) setDriverData(null);
         });
@@ -573,8 +564,9 @@ export default function AllUsers() {
     u.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // Get current logged-in user role from localStorage or context
-  const currentUserRole = localStorage.getItem("currentUserRole"); // must set at login
+  const currentUserRole = localStorage
+    .getItem("currentUserRole")
+    ?.toLowerCase(); // lowercase safe
 
   if (isLoading)
     return (
@@ -686,7 +678,7 @@ export default function AllUsers() {
             ref={modalRef}
             className="bg-white w-full max-w-4xl min-h-screen sm:min-h-0 sm:rounded-[40px] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-300"
           >
-            {/* Modal Header */}
+            {/* Header */}
             <div className="bg-slate-900 p-6 sm:p-10 text-white flex justify-between items-start relative overflow-hidden">
               <div className="relative z-10">
                 <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em] mb-2">
@@ -712,7 +704,7 @@ export default function AllUsers() {
               </button>
             </div>
 
-            {/* Modal Body */}
+            {/* Body */}
             <div className="p-6 sm:p-10 space-y-6">
               <div>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
@@ -721,7 +713,7 @@ export default function AllUsers() {
                 <p className="font-bold text-slate-900">{selectedUser._id}</p>
               </div>
 
-              {/* Show driver data if driver */}
+              {/* Driver Info */}
               {selectedUser.role === "driver" && driverData && (
                 <div className="border border-slate-200 rounded-[24px] p-6">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -740,7 +732,7 @@ export default function AllUsers() {
                 </div>
               )}
 
-              {/* Buttons for rider/admin if current user is admin */}
+              {/* Buttons for rider/admin */}
               {currentUserRole === "admin" &&
                 selectedUser.role !== "driver" && (
                   <div className="flex gap-4">
