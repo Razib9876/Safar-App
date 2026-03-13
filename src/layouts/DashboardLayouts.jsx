@@ -233,211 +233,232 @@ export default function DashboardLayout() {
               {/* Payments (driver only) */}
               {user.role === "driver" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Payments"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Payments"
                     >
-                      <path d="M20 7h-9"></path>
-                      <path d="M14 17H5"></path>
-                      <circle cx="17" cy="17" r="3"></circle>
-                      <circle cx="7" cy="7" r="3"></circle>
-                    </svg>
-                    <span className="is-drawer-close:hidden">Payments</span>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <path d="M20 7h-9"></path>
+                        <path d="M14 17H5"></path>
+                        <circle cx="17" cy="17" r="3"></circle>
+                        <circle cx="7" cy="7" r="3"></circle>
+                      </svg>
+                      <span className="is-drawer-close:hidden">Payments</span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Drivers earnings */}
               {user.role === "driver" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Earnings"
-                  >
-                    {user.earnings > 1000 ? (
-                      // High earnings icon
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="my-1.5 inline-block size-4 mr-2"
-                      >
-                        <path d="M12 2L15 8H9L12 2Z" />{" "}
-                        {/* Example: upward arrow */}
-                      </svg>
-                    ) : (
-                      // Low earnings icon
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeLinejoin="round"
-                        strokeLinecap="round"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="my-1.5 inline-block size-4 mr-2"
-                      >
-                        <path d="M12 22L9 16H15L12 22Z" />{" "}
-                        {/* Example: downward arrow */}
-                      </svg>
-                    )}
-                    <span className="is-drawer-close:hidden">Earnings</span>
-                  </button>
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Earnings"
+                    >
+                      {user.earnings > 1000 ? (
+                        // High earnings icon
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          strokeLinejoin="round"
+                          strokeLinecap="round"
+                          strokeWidth="2"
+                          fill="none"
+                          stroke="currentColor"
+                          className="my-1.5 inline-block size-4 mr-2"
+                        >
+                          <path d="M12 2L15 8H9L12 2Z" />{" "}
+                          {/* Example: upward arrow */}
+                        </svg>
+                      ) : (
+                        // Low earnings icon
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          strokeLinejoin="round"
+                          strokeLinecap="round"
+                          strokeWidth="2"
+                          fill="none"
+                          stroke="currentColor"
+                          className="my-1.5 inline-block size-4 mr-2"
+                        >
+                          <path d="M12 22L9 16H15L12 22Z" />{" "}
+                          {/* Example: downward arrow */}
+                        </svg>
+                      )}
+                      <span className="is-drawer-close:hidden">Earnings</span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Create Offer by driver */}
               {user.role === "driver" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Create Offer"
-                  >
-                    {/* Plus / New Offer Icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Create Offer"
                     >
-                      <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                      ></rect>
-                      <line x1="12" y1="8" x2="12" y2="16"></line>
-                      <line x1="8" y1="12" x2="16" y2="12"></line>
-                    </svg>
-                    <span className="is-drawer-close:hidden">Create Offer</span>
-                  </button>
+                      {/* Plus / New Offer Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <rect
+                          x="3"
+                          y="3"
+                          width="18"
+                          height="18"
+                          rx="2"
+                          ry="2"
+                        ></rect>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                      </svg>
+                      <span className="is-drawer-close:hidden">
+                        Create Offer
+                      </span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Admin Earnings */}
               {user.role === "admin" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Revenue"
-                  >
-                    {/* Dollar / Earnings Icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Revenue"
                     >
-                      <path d="M12 1v22"></path> {/* Vertical line for $ */}
-                      <path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H7"></path>{" "}
-                      {/* Curves for $ sign */}
-                    </svg>
-                    <span className="is-drawer-close:hidden">Revenue</span>
-                  </button>
+                      {/* Dollar / Earnings Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <path d="M12 1v22"></path> {/* Vertical line for $ */}
+                        <path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H7"></path>{" "}
+                        {/* Curves for $ sign */}
+                      </svg>
+                      <span className="is-drawer-close:hidden">Revenue</span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Admin Edit */}
               {user.role === "admin" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Edit"
-                  >
-                    {/* Pencil / Edit Icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Edit"
                     >
-                      <path d="M12 20h9"></path> {/* Horizontal base line */}
-                      <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"></path>{" "}
-                      {/* Pencil body */}
-                    </svg>
-                    <span className="is-drawer-close:hidden">Edit</span>
-                  </button>
+                      {/* Pencil / Edit Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <path d="M12 20h9"></path> {/* Horizontal base line */}
+                        <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"></path>{" "}
+                        {/* Pencil body */}
+                      </svg>
+                      <span className="is-drawer-close:hidden">Edit</span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Track Driver */}
               {user.role === "admin" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Track Driver"
-                  >
-                    {/* Location Pin / Track Icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Track Driver"
                     >
-                      <path d="M12 21s-6-7-6-11a6 6 0 1112 0c0 4-6 11-6 11z"></path>{" "}
-                      {/* Pin */}
-                      <circle cx="12" cy="10" r="2"></circle> {/* Pin center */}
-                    </svg>
-                    <span className="is-drawer-close:hidden">Track Driver</span>
-                  </button>
+                      {/* Location Pin / Track Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <path d="M12 21s-6-7-6-11a6 6 0 1112 0c0 4-6 11-6 11z"></path>{" "}
+                        {/* Pin */}
+                        <circle cx="12" cy="10" r="2"></circle>{" "}
+                        {/* Pin center */}
+                      </svg>
+                      <span className="is-drawer-close:hidden">
+                        Track Driver
+                      </span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* All Vehicles */}
               {user.role === "admin" && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="All Vehicles"
-                  >
-                    {/* Car Icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="All Vehicles"
                     >
-                      <rect x="3" y="11" width="18" height="6" rx="2"></rect>{" "}
-                      {/* Car body */}
-                      <circle cx="7.5" cy="17.5" r="1.5"></circle>{" "}
-                      {/* Left wheel */}
-                      <circle cx="16.5" cy="17.5" r="1.5"></circle>{" "}
-                      {/* Right wheel */}
-                      <path d="M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4"></path>{" "}
-                      {/* Car top */}
-                    </svg>
-                    <span className="is-drawer-close:hidden">All Vehicles</span>
-                  </button>
+                      {/* Car Icon */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <rect x="3" y="11" width="18" height="6" rx="2"></rect>{" "}
+                        {/* Car body */}
+                        <circle cx="7.5" cy="17.5" r="1.5"></circle>{" "}
+                        {/* Left wheel */}
+                        <circle cx="16.5" cy="17.5" r="1.5"></circle>{" "}
+                        {/* Right wheel */}
+                        <path d="M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4"></path>{" "}
+                        {/* Car top */}
+                      </svg>
+                      <span className="is-drawer-close:hidden">
+                        All Vehicles
+                      </span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Trip History */}
@@ -445,26 +466,28 @@ export default function DashboardLayout() {
                 user.role === "admin" ||
                 user.role === "driver") && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="History"
-                  >
-                    {/* Clock Icon for Trip History */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="History"
                     >
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M12 6v6l4 2"></path> {/* clock hands */}
-                    </svg>
-                    <span className="is-drawer-close:hidden">History</span>
-                  </button>
+                      {/* Clock Icon for Trip History */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path> {/* clock hands */}
+                      </svg>
+                      <span className="is-drawer-close:hidden">History</span>
+                    </button>
+                  </Link>
                 </li>
               )}
               {/* Prifile */}
@@ -472,27 +495,29 @@ export default function DashboardLayout() {
                 user.role === "admin" ||
                 user.role === "driver") && (
                 <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Payments"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4 mr-2"
+                  <Link to="/dashboard">
+                    <button
+                      className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                      data-tip="Payments"
                     >
-                      <path d="M20 7h-9"></path>
-                      <path d="M14 17H5"></path>
-                      <circle cx="17" cy="17" r="3"></circle>
-                      <circle cx="7" cy="7" r="3"></circle>
-                    </svg>
-                    <span className="is-drawer-close:hidden">Payments</span>
-                  </button>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2"
+                        fill="none"
+                        stroke="currentColor"
+                        className="my-1.5 inline-block size-4 mr-2"
+                      >
+                        <path d="M20 7h-9"></path>
+                        <path d="M14 17H5"></path>
+                        <circle cx="17" cy="17" r="3"></circle>
+                        <circle cx="7" cy="7" r="3"></circle>
+                      </svg>
+                      <span className="is-drawer-close:hidden">Payments</span>
+                    </button>
+                  </Link>
                 </li>
               )}
             </ul>
