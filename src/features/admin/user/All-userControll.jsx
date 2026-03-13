@@ -499,11 +499,6 @@ const promoteUser = async (userId) => {
   return axiosSecure.patch(`/users/${userId}/promote-admin`);
 };
 
-// Demote admin to rider
-const demoteUser = async (userId) => {
-  return axiosSecure.patch(`/users/${userId}/demote-user`);
-};
-
 export default function AllUsers() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [driverData, setDriverData] = useState(null);
@@ -522,12 +517,6 @@ export default function AllUsers() {
     onError: (err) => console.error(err),
   });
 
-  const demoteMutation = useMutation({
-    mutationFn: demoteUser,
-    onSuccess: () => queryClient.invalidateQueries(["all-users"]),
-    onError: (err) => console.error(err),
-  });
-
   // Fetch driver data safely
   useEffect(() => {
     let isMounted = true;
@@ -542,6 +531,7 @@ export default function AllUsers() {
           if (isMounted) setDriverData(null);
         }
       } else {
+        // Safe async null update
         Promise.resolve().then(() => {
           if (isMounted) setDriverData(null);
         });
@@ -569,10 +559,6 @@ export default function AllUsers() {
   const filteredUsers = users.filter((u) =>
     u.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
-  const currentUserRole = localStorage
-    .getItem("currentUserRole")
-    ?.toLowerCase();
 
   if (isLoading)
     return (
@@ -693,15 +679,6 @@ export default function AllUsers() {
                 <h2 className="text-3xl font-black italic uppercase tracking-tighter">
                   {selectedUser.name}
                 </h2>
-                <div className="flex gap-4 mt-4">
-                  <span className="flex items-center gap-2 text-xs font-black bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
-                    <FiCalendar className="text-blue-400" /> ID:{" "}
-                    {selectedUser._id.slice(-8)}
-                  </span>
-                  <span className="flex items-center gap-2 text-xs font-black bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/20 uppercase">
-                    {selectedUser.role}
-                  </span>
-                </div>
               </div>
               <button
                 onClick={() => setSelectedUser(null)}
@@ -712,116 +689,40 @@ export default function AllUsers() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Column 1: User Info */}
-              <div className="lg:col-span-2 space-y-8">
-                <section>
+            <div className="p-6 sm:p-10 space-y-6">
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                  User ID
+                </p>
+                <p className="font-bold text-slate-900">{selectedUser._id}</p>
+              </div>
+
+              {/* Show driver data if driver */}
+              {selectedUser.role === "driver" && driverData && (
+                <div className="border border-slate-200 rounded-[24px] p-6">
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <FiUser className="text-blue-600" /> Personal Info
+                    <FiTruck className="text-blue-600" /> Driver Info
                   </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
-                        Name
-                      </p>
-                      <p className="font-bold text-slate-800">
-                        {selectedUser.name}
-                      </p>
-                      <p className="text-xs text-slate-500 truncate">
-                        {selectedUser._id}
-                      </p>
-                    </div>
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
-                        Status
-                      </p>
-                      <p className="font-bold text-slate-800">
-                        {selectedUser.status}
-                      </p>
-                    </div>
-                  </div>
-                </section>
+                  <p className="font-bold text-slate-900">
+                    Vehicle: {driverData.activeVehicle?.type || "N/A"}
+                  </p>
+                  <p className="font-mono text-xs">
+                    Registration:{" "}
+                    {driverData.activeVehicle?.registrationNumber || "N/A"}
+                  </p>
+                  <p className="font-mono text-xs">
+                    License: {driverData.drivingLicense?.number || "N/A"}
+                  </p>
+                </div>
+              )}
 
-                {/* Driver Info if role is driver */}
-                {selectedUser.role === "driver" && driverData && (
-                  <section>
-                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <FiShield className="text-emerald-600" /> Driver Info
-                    </h3>
-                    <div className="border border-slate-200 rounded-[24px] p-6 flex flex-col md:flex-row gap-6">
-                      {driverData.photo && (
-                        <img
-                          src={driverData.photo}
-                          className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
-                        />
-                      )}
-                      <div className="flex-1 grid grid-cols-2 gap-y-4">
-                        <div>
-                          <p className="text-[9px] font-black text-slate-400 uppercase">
-                            Operator
-                          </p>
-                          <p className="font-bold">{driverData.name}</p>
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-black text-slate-400 uppercase">
-                            Unit Type
-                          </p>
-                          <p className="font-bold text-blue-600 uppercase italic">
-                            {driverData.activeVehicle?.type || "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-black text-slate-400 uppercase">
-                            Registration
-                          </p>
-                          <p className="font-mono text-xs font-bold">
-                            {driverData.activeVehicle?.registrationNumber ||
-                              "N/A"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[9px] font-black text-slate-400 uppercase">
-                            License
-                          </p>
-                          <p className="font-mono text-xs font-bold">
-                            {driverData.drivingLicense?.number || "N/A"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                )}
-              </div>
-
-              {/* Column 2: Actions */}
-              {/* Column 2: Actions */}
-              <div className="space-y-6">
-                {currentUserRole === "admin" &&
-                  selectedUser.role !== "driver" && (
-                    <div className="flex flex-col gap-4">
-                      {selectedUser.role !== "admin" && (
-                        <button
-                          className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
-                          onClick={() =>
-                            promoteMutation.mutate(selectedUser._id)
-                          }
-                        >
-                          Make Admin
-                        </button>
-                      )}
-                      {selectedUser.role === "admin" && (
-                        <button
-                          className="w-full py-4 bg-red-500 hover:bg-red-600 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
-                          onClick={() =>
-                            demoteMutation.mutate(selectedUser._id)
-                          }
-                        >
-                          Make Rider
-                        </button>
-                      )}
-                    </div>
-                  )}
-              </div>
+              {/* Simple Button: Always visible */}
+              <button
+                className="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700"
+                onClick={() => promoteMutation.mutate(selectedUser._id)}
+              >
+                Promote/Demote User
+              </button>
             </div>
           </div>
         </div>
