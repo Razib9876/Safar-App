@@ -109,9 +109,8 @@
 // };
 
 // export default AllUsersControl;
-
 import { useState, useRef, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import {
   FiUser,
@@ -124,96 +123,95 @@ import {
   FiCreditCard,
   FiArchive,
 } from "react-icons/fi";
-import toast from "react-hot-toast";
 
-const fetchUsers = async () => {
-  const res = await axios.get(
-    "https://thriving-endurance-production.up.railway.app/api/users",
-  );
-  return res.data || [];
+// Fetch all users
+const fetchAllUsers = async () => {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/users`);
+  return res.data.data || [];
 };
 
-const fetchDriverData = async (userId) => {
+// Fetch driver by user ID
+const fetchDriverByUserId = async (userId) => {
   const res = await axios.get(
-    `https://thriving-endurance-production.up.railway.app/api/drivers/user/${userId}`,
+    `${import.meta.env.VITE_API_URL}/drivers/user/${userId}`,
   );
   return res.data || null;
 };
 
+// Promote user to admin
+const promoteUser = async (userId) => {
+  await axios.post(
+    `${import.meta.env.VITE_API_URL}/users/${userId}/promote-admin`,
+  );
+};
+
+// Demote admin to user
+const demoteUser = async (userId) => {
+  await axios.post(
+    `${import.meta.env.VITE_API_URL}/users/${userId}/demote-user`,
+  );
+};
+
 export default function AllUsers() {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [driverData, setDriverData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [driverData, setDriverData] = useState(null);
   const modalRef = useRef();
   const queryClient = useQueryClient();
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["all-users"],
-    queryFn: fetchUsers,
+    queryFn: fetchAllUsers,
   });
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target))
-        setSelectedUser(null);
-    };
-    if (selectedUser)
-      document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectedUser]);
+  const promoteMutation = useMutation(promoteUser, {
+    onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+  });
 
-  useEffect(() => {
-    let isMounted = true; // to avoid setting state after unmount
+  const demoteMutation = useMutation(demoteUser, {
+    onSuccess: () => queryClient.invalidateQueries(["all-users"]),
+  });
 
-    const getDriverData = async () => {
-      if (selectedUser?.role === "driver") {
-        try {
-          const data = await fetchDriverData(selectedUser._id);
-          if (isMounted) setDriverData(data);
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
-        if (isMounted) setDriverData(null);
+  // Fetch driver data only when a driver row is selected
+  useEffect(() => {
+    const fetchDriverData = async () => {
+      if (!selectedUser || selectedUser.role !== "driver") {
+        // Defer state update to avoid synchronous setState in effect
+        setTimeout(() => setDriverData(null), 0);
+        return;
+      }
+
+      try {
+        const data = await fetchDriverByUserId(selectedUser._id);
+        setDriverData(data);
+      } catch (error) {
+        console.error("Failed to fetch driver data:", error);
+        setDriverData(null);
       }
     };
 
-    getDriverData();
-
-    return () => {
-      isMounted = false;
-    };
+    fetchDriverData();
   }, [selectedUser]);
-  const handlePromote = async (id) => {
-    try {
-      await axios.patch(
-        `https://thriving-endurance-production.up.railway.app/api/users/${id}/promote-admin`,
-      );
-      toast.success("User promoted to admin");
-      queryClient.invalidateQueries(["all-users"]);
-      setSelectedUser(null);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to promote user");
-    }
-  };
 
-  const handleDemote = async (id) => {
-    try {
-      await axios.patch(
-        `https://thriving-endurance-production.up.railway.app/api/users/${id}/demote-user`,
-      );
-      toast.success("Admin demoted to user");
-      queryClient.invalidateQueries(["all-users"]);
-      setSelectedUser(null);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to demote admin");
+  // Close modal on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        setSelectedUser(null);
+      }
+    };
+    if (selectedUser) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
-  };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [selectedUser]);
 
-  const filteredUsers = users.filter((u) =>
-    u.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  // Filter users safely
+  const filteredUsers = (users || []).filter(
+    (user) =>
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.status?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (isLoading)
@@ -225,9 +223,10 @@ export default function AllUsers() {
 
   return (
     <div className="w-full pb-10">
-      {/* Header */}
+      {/* Header Section */}
       <div className="px-0 sm:px-6 mb-10">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          {/* Title Section */}
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-600 border-2 border-orange-200">
               <FiArchive size={28} />
@@ -237,7 +236,7 @@ export default function AllUsers() {
                 User <span className="text-orange-600">Management</span>
               </h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
-                SYSTEM_DATA • {users.length} Records
+                Data_Verification • {users.length} Records
               </p>
             </div>
           </div>
@@ -266,7 +265,7 @@ export default function AllUsers() {
         <table className="min-w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-black text-slate-500 uppercase tracking-wider">
-              <th className="p-4 text-left">User / ID</th>
+              <th className="p-4 text-left">Name / ID</th>
               <th className="p-4 text-left">Role</th>
               <th className="p-4 text-left">Status</th>
             </tr>
@@ -284,10 +283,10 @@ export default function AllUsers() {
                     #{user._id.slice(-8)}
                   </div>
                 </td>
-                <td className="p-4 text-slate-600 font-bold uppercase">
+                <td className="p-4 font-bold text-blue-600 uppercase">
                   {user.role}
                 </td>
-                <td className="p-4 text-slate-500 capitalize">{user.status}</td>
+                <td className="p-4 font-bold text-slate-600">{user.status}</td>
               </tr>
             ))}
           </tbody>
@@ -315,35 +314,36 @@ export default function AllUsers() {
                 {user.role}
               </span>
             </div>
-            <div className="flex justify-between text-[10px] font-bold text-slate-500">
+            <div className="flex justify-between items-center text-[10px] font-black uppercase text-slate-500">
               <span>Status: {user.status}</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* User Modal */}
+      {/* Modal */}
       {selectedUser && (
         <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center z-[100] p-0 sm:p-4 overflow-y-auto">
           <div
             ref={modalRef}
-            className="bg-white w-full max-w-4xl sm:rounded-[40px] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-300"
+            className="bg-white w-full max-w-4xl min-h-screen sm:min-h-0 sm:rounded-[40px] shadow-2xl overflow-hidden relative animate-in fade-in zoom-in-95 duration-300"
           >
+            {/* Modal Header */}
             <div className="bg-slate-900 p-6 sm:p-10 text-white flex justify-between items-start relative overflow-hidden">
               <div className="relative z-10">
                 <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.4em] mb-2">
-                  USER PROFILE
+                  User Details
                 </p>
                 <h2 className="text-3xl font-black italic uppercase tracking-tighter">
                   {selectedUser.name}
                 </h2>
                 <div className="flex gap-4 mt-4">
                   <span className="flex items-center gap-2 text-xs font-bold bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
-                    <FiCalendar className="text-blue-400" /> Role:{" "}
-                    {selectedUser.role.toUpperCase()}
+                    <FiCalendar className="text-blue-400" /> ID:{" "}
+                    {selectedUser._id.slice(-8)}
                   </span>
                   <span className="flex items-center gap-2 text-xs font-bold bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/20 uppercase">
-                    {selectedUser.status.toUpperCase()}
+                    {selectedUser.role}
                   </span>
                 </div>
               </div>
@@ -357,10 +357,11 @@ export default function AllUsers() {
 
             {/* Modal Body */}
             <div className="p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Column 1: User Info */}
               <div className="lg:col-span-2 space-y-8">
                 <section>
                   <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <FiUser className="text-blue-600" /> User Details
+                    <FiUser className="text-blue-600" /> Personal Info
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
@@ -371,65 +372,86 @@ export default function AllUsers() {
                         {selectedUser.name}
                       </p>
                       <p className="text-xs text-slate-500 truncate">
-                        ID: {selectedUser._id}
+                        {selectedUser._id}
                       </p>
                     </div>
                     <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
                       <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
-                        Role
+                        Status
                       </p>
                       <p className="font-bold text-slate-800">
-                        {selectedUser.role}
+                        {selectedUser.status}
                       </p>
                     </div>
                   </div>
                 </section>
 
-                {/* Driver Details if role is driver */}
+                {/* Driver Info if role is driver */}
                 {selectedUser.role === "driver" && driverData && (
                   <section>
                     <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <FiTruck className="text-blue-500" /> Driver Data
+                      <FiShield className="text-emerald-600" /> Driver Info
                     </h3>
-                    <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
-                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1">
-                        Vehicle Type
-                      </p>
-                      <p className="font-bold text-blue-600 uppercase italic">
-                        {driverData.activeVehicle?.type || "N/A"}
-                      </p>
-                      <p className="text-[9px] font-black text-slate-400 uppercase mb-1 mt-2">
-                        Vehicle Registration
-                      </p>
-                      <p className="font-mono text-xs font-bold">
-                        {driverData.activeVehicle?.registrationNumber || "N/A"}
-                      </p>
+                    <div className="border border-slate-200 rounded-[24px] p-6 flex flex-col md:flex-row gap-6">
+                      <img
+                        src={driverData.photo}
+                        className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-100"
+                      />
+                      <div className="flex-1 grid grid-cols-2 gap-y-4">
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Operator
+                          </p>
+                          <p className="font-bold">{driverData.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Unit Type
+                          </p>
+                          <p className="font-bold text-blue-600 uppercase italic">
+                            {driverData.activeVehicle?.type}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            Registration
+                          </p>
+                          <p className="font-mono text-xs font-bold">
+                            {driverData.activeVehicle?.registrationNumber}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[9px] font-black text-slate-400 uppercase">
+                            License
+                          </p>
+                          <p className="font-mono text-xs font-bold">
+                            {driverData.drivingLicense?.number}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </section>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              {selectedUser.role !== "driver" && (
-                <div className="space-y-6">
-                  {selectedUser.role === "rider" && (
-                    <button
-                      onClick={() => handlePromote(selectedUser._id)}
-                      className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
-                    >
-                      Make Admin
-                    </button>
-                  )}
-                  {selectedUser.role === "admin" && (
-                    <button
-                      onClick={() => handleDemote(selectedUser._id)}
-                      className="w-full py-4 bg-orange-600 hover:bg-orange-500 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
-                    >
-                      Make User
-                    </button>
-                  )}
-                </div>
-              )}
+              {/* Column 2: Actions */}
+              <div className="space-y-6">
+                {(selectedUser.role === "rider" ||
+                  selectedUser.role === "admin") && (
+                  <button
+                    className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-200"
+                    onClick={() => {
+                      if (selectedUser.role === "rider") {
+                        promoteMutation.mutate(selectedUser._id);
+                      } else if (selectedUser.role === "admin") {
+                        demoteMutation.mutate(selectedUser._id);
+                      }
+                    }}
+                  >
+                    {selectedUser.role === "rider" ? "Make Admin" : "Make User"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
