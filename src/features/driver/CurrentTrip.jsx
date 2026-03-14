@@ -461,7 +461,7 @@ export default function CurrentTrip() {
   const showOtpInput = currentTrip.pickStatus === "dropped";
 
   return (
-    <div className="max-w-4xl mx-auto pb-10 space-y-6">
+    <div className="  space-y-6">
       {/* ================= HEADER SECTION ================= */}
       <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
