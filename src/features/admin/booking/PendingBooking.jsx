@@ -19,6 +19,7 @@ import {
   FiX,
   FiMail,
   FiZap,
+  FiInbox,
 } from "react-icons/fi";
 
 // Note: Ensure axiosSecure is defined or replace with your axios instance
