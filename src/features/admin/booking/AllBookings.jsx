@@ -188,7 +188,7 @@ export default function AdminLogisticsMaster() {
         </div>
       </div>
       {/* ================= TABLE ================= */}
-      <div className="hidden md:block overflow-x-auto bg-white shadow-sm rounded-2xl border border-slate-200">
+      <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
