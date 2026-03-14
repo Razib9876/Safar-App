@@ -1,9 +1,9 @@
 import React from "react";
 import HandleTrips from "./handleTrips";
-import PendingTrips from "./PendingTrip";
 import CompletedBooking from "./CompletedBooking";
 import PendingBooking from "./PendingBooking";
 import RejectedBooking from "./RejectedBooking";
+import AdminLogisticsMaster from "./AllBookings";
 
 const BookingManagement = () => {
   return (
@@ -26,7 +26,7 @@ const BookingManagement = () => {
           aria-label="All Bookings"
         />
         <div className="tab-content bg-base-100 border-base-300 ">
-          <PendingTrips></PendingTrips>
+          <AdminLogisticsMaster></AdminLogisticsMaster>
         </div>
 
         <input
