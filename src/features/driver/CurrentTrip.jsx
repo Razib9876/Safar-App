@@ -312,16 +312,27 @@ import axiosSecure from "../../services/axiosSecure";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   FiActivity,
-  FiNavigation,
-  FiMapPin,
-  FiClock,
-  FiUser,
-  FiPhone,
-  FiMail,
-  FiTruck,
   FiCheckCircle,
-  FiShieldLock,
+  FiClock,
+  FiMail,
+  FiMapPin,
+  FiNavigation,
+  FiPhone,
+  FiTruck,
+  FiUser,
 } from "react-icons/fi";
+// import {
+//   FiActivity,
+//   FiNavigation,
+//   FiMapPin,
+//   FiClock,
+//   FiUser,
+//   FiPhone,
+//   FiMail,
+//   FiTruck,
+//   FiCheckCircle,
+//   FiShieldLock,
+// } from "react-icons/fi";
 
 const formatTime12Hour = (time24) => {
   if (!time24) return "";
