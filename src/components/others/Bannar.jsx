@@ -93,9 +93,9 @@ const Bannar = () => {
               className="mt-4 space-y-2"
               style={{ fontSize: "clamp(0.85rem, 1.2vw, 1.125rem)" }}
             >
-              <li>✔ Free cancellations on most bookings</li>
-              <li>✔ 60,000+ locations</li>
-              <li>✔ Customer support in 30+ languages</li>
+              <li>✔ Simple and user-friendly trip booking experience</li>
+              <li>✔ Multiple transport options for different routes</li>
+              <li>✔ Smart dashboard for managing trips and bookings</li>
             </ul>
           </div>
         </div>
