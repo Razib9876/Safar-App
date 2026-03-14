@@ -75,7 +75,7 @@ export default function CompletedTrips() {
   }, 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 pb-10">
+    <div className=" p-4 sm:p-6 pb-10">
       {/* ================= ARCHIVE & LOGS HEADER ================= */}
       <div className="px-0 sm:px-6 mb-10 pt-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
