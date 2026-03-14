@@ -830,7 +830,7 @@ export default function MyBookings() {
                           paymentMethod: selectedMethod,
                         })
                       }
-                      className="w-full bg-blue-600 text-white py-4 rounded-xl font-black uppercase tracking-[2px] hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
+                      className="w-full bg-orange-500 text-white hover:bg-orange-600 py-4 rounded-xl font-black uppercase tracking-[2px] transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2"
                     >
                       {confirmAndPayMutation.isPending
                         ? "Processing..."
