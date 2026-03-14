@@ -145,9 +145,9 @@ export default function AdminLogisticsMaster() {
   return (
     <div>
       {/* Header & Filters */}
-      <div className="px-0 sm:px-6 mb-10">
+      {/* <div className="px-0 sm:px-6 mb-10">
         <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8">
-          {/* Title Section */}
+         
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-orange-500 shadow-xl border border-slate-800">
               <FiGlobe size={28} />
@@ -162,7 +162,7 @@ export default function AdminLogisticsMaster() {
             </div>
           </div>
 
-          {/* Industrial Segmented Control */}
+          
           <div className="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-inner">
             {["all", "pending", "confirmed", "paid"].map((status) => (
               <button
@@ -179,10 +179,11 @@ export default function AdminLogisticsMaster() {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
+      <h1 className="text-2xl font-bold mb-6">All Bookings</h1>
       {/* ================= TABLE ================= */}
       <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
-        <table className="h-screen text-sm">
+        <table className="min-w-full text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
               <th className="p-3">Route</th>
