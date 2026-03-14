@@ -103,7 +103,7 @@ export default function AdminBookings() {
     return <div className="p-6 text-center font-bold">Loading bookings...</div>;
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    <div>
       {/* Parent container with 0 padding on mobile, restored on small screens */}
       <div className="px-0 sm:px-6 mb-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">

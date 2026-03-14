@@ -75,28 +75,47 @@ export default function CompletedTrips() {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 pb-10">
-      {/* Header & Stats Card */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight">
-            Trip History
-          </h1>
-          <p className="text-gray-500 text-sm font-medium">
-            You have completed {completedTrips.length} trips
-          </p>
-        </div>
-
-        <div className="bg-indigo-600 p-4 rounded-2xl text-white flex items-center gap-4 shadow-lg shadow-indigo-100 w-full md:w-auto">
-          <div className="bg-indigo-500 p-3 rounded-xl">
-            <Wallet className="w-6 h-6" />
+      {/* ================= ARCHIVE & LOGS HEADER ================= */}
+      <div className="px-0 sm:px-6 mb-10 pt-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          {/* Brand & Log Status */}
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-emerald-400 shadow-lg shadow-slate-200 border border-slate-700">
+              <FiArchive size={28} />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
+                Mission <span className="text-emerald-600">Logs</span>
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+                <FiCheckCircle className="text-emerald-500" size={12} />
+                Database_Synchronized • {completedTrips.length} Records Found
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-[10px] uppercase font-bold text-indigo-200">
-              Total Earnings
-            </p>
-            <p className="text-xl font-black">
-              {totalEarnings.toLocaleString()} TK
-            </p>
+
+          {/* Revenue Analytics Badge */}
+          <div className="flex items-center">
+            <div className="px-6 py-3 bg-white rounded-2xl border-l-4 border-emerald-500 shadow-sm flex items-center gap-4 border border-gray-100">
+              <div className="flex flex-col">
+                <span className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1">
+                  Gross_Revenue
+                </span>
+                <span className="text-slate-900 text-xl font-black tracking-tight">
+                  {totalEarnings.toLocaleString()}{" "}
+                  <span className="text-xs text-emerald-600">TK</span>
+                </span>
+              </div>
+              <div className="h-8 w-[1px] bg-gray-100"></div>
+              <div className="flex flex-col">
+                <span className="text-slate-400 text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1">
+                  Efficiency
+                </span>
+                <span className="text-emerald-600 text-[11px] font-bold">
+                  100% SUCC
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

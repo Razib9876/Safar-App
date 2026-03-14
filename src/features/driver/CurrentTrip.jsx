@@ -135,7 +135,75 @@ export default function CurrentTrip() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold mb-4">Current Trip</h1>
+      {/* ================= ACTIVE OPERATIONS HEADER ================= */}
+      <div className="px-0 sm:px-6 mb-8 pt-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          {/* Brand & Mission Status */}
+          <div className="flex items-center gap-4">
+            <div
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-colors duration-500 ${
+                rideStarted
+                  ? "bg-emerald-600 shadow-emerald-200"
+                  : "bg-orange-600 shadow-orange-200"
+              }`}
+            >
+              {rideStarted ? (
+                <FiNavigation size={28} className="animate-pulse" />
+              ) : (
+                <FiActivity size={28} />
+              )}
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
+                Active{" "}
+                <span
+                  className={
+                    rideStarted ? "text-emerald-600" : "text-orange-600"
+                  }
+                >
+                  Mission
+                </span>
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span
+                    className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${rideStarted ? "bg-emerald-400" : "bg-orange-400"}`}
+                  ></span>
+                  <span
+                    className={`relative inline-flex rounded-full h-2 w-2 ${rideStarted ? "bg-emerald-500" : "bg-orange-500"}`}
+                  ></span>
+                </span>
+                {rideStarted
+                  ? "In_Transit: Destination Tracking Active"
+                  : "Status: Awaiting Pilot Ignition"}
+              </p>
+            </div>
+          </div>
+
+          {/* Telemetry Badge */}
+          <div className="flex items-center">
+            <div className="px-6 py-3 bg-slate-900 rounded-2xl border-r-4 border-indigo-500 shadow-xl flex items-center gap-4">
+              <div className="flex flex-col">
+                <span className="text-indigo-400 text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1">
+                  Trip_ID
+                </span>
+                <span className="text-white text-[11px] font-mono tracking-tighter">
+                  #{currentTrip._id.slice(-8).toUpperCase()}
+                </span>
+              </div>
+              <div className="h-8 w-[1px] bg-slate-700"></div>
+              <div className="flex flex-col">
+                <span className="text-emerald-400 text-[9px] font-black uppercase tracking-[0.2em] leading-none mb-1">
+                  Earning
+                </span>
+                <span className="text-white text-[13px] font-black">
+                  {driverQuote?.currentAmount} TK
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Trip Info */}
       <div className="bg-white shadow rounded-xl p-6 border">

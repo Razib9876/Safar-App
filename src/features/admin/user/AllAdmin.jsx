@@ -69,7 +69,7 @@ export default function AllAdmin() {
     );
 
   return (
-    <div className="w-full pb-10 ">
+    <div>
       {/* Header Section */}
       <div className="p-10 sm:px-6 mb-10">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
