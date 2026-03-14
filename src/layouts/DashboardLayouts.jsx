@@ -539,9 +539,9 @@ import useAuth from "../hooks/useAuth";
 import Navbar from "../components/Layout/Navbar";
 
 /* Sidebar Item */
-const SidebarItem = ({ to, icon, label, dataTip }) => {
+const SidebarItem = ({ to, icon, label }) => {
   return (
-    <li>
+    <li className="relative group">
       <NavLink
         to={to}
         end={to === "/dashboard"}
@@ -551,14 +551,24 @@ const SidebarItem = ({ to, icon, label, dataTip }) => {
           }`
         }
       >
-        <div
-          className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center"
-          data-tip={dataTip || label}
-        >
-          {icon}
-          <span className="is-drawer-close:hidden ml-2">{label}</span>
-        </div>
+        {icon}
+        <span className="is-drawer-close:hidden ml-2">{label}</span>
       </NavLink>
+
+      <span
+        className="
+        absolute left-full translate-x-2 top-1/2 -translate-y-1/2
+        whitespace-nowrap
+        bg-base-300 text-sm px-2 py-1 rounded
+        opacity-0 group-hover:opacity-100
+        pointer-events-none
+        transition
+        z-[9999]
+        is-drawer-open:hidden
+      "
+      >
+        {label}
+      </span>
     </li>
   );
 };
@@ -605,7 +615,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className=" min-h-screen bg-base-100">
       <Navbar />
 
       <div className="drawer lg:drawer-open pt-16">
@@ -654,10 +664,11 @@ export default function DashboardLayout() {
         </div>
 
         {/* SIDEBAR */}
-        <div className="drawer-side z-20">
+        <div className="drawer-side z-50">
           <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
 
-          <div className="flex min-h-full flex-col bg-base-200 border-r border-base-300 is-drawer-close:w-16 is-drawer-open:w-64 transition-all duration-300">
+          <div className="flex min-h-full flex-col bg-base-200 border-r border-base-300 overflow-visible is-drawer-close:w-16 is-drawer-open:w-64 transition-all duration-300">
+            {" "}
             <ul className="menu w-full grow overflow-y-auto">
               {(user.role === "rider" ||
                 user.role === "admin" ||
