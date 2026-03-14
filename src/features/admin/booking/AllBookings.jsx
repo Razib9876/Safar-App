@@ -19,6 +19,7 @@ import {
   FiUserPlus,
 } from "react-icons/fi";
 import { toast } from "react-hot-toast"; // Assuming you use a toast library, otherwise use alert
+import Loading from "../../../components/Loading";
 
 const axiosSecure = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
@@ -139,15 +140,7 @@ export default function AdminLogisticsMaster() {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <FiLoader className="text-4xl text-blue-600 animate-spin" />
-        <p className="font-bold text-slate-500 animate-pulse">
-          Syncing Fleet Data...
-        </p>
-      </div>
-    );
+  if (isLoading) return <Loading></Loading>;
 
   return (
     <div>
