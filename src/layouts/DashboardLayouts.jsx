@@ -587,7 +587,7 @@ export default function DashboardLayout() {
   return (
     <div className="min-h-screen bg-base-100">
       <Navbar />
-      <div className="drawer lg:drawer-open pt-16">
+      <div className="drawer lg:drawer-open pt-16 min-h-screen bg-base-200">
         <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
         <div className="drawer-content flex flex-col bg-base-200/50">
