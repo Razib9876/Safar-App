@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axiosSecure from "../../services/axiosSecure";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { FiActivity } from "react-icons/fi";
+import { FiActivity, FiNavigation } from "react-icons/fi";
 
 // 24-hour to 12-hour AM/PM format
 const formatTime12Hour = (time24) => {
@@ -135,7 +135,7 @@ export default function CurrentTrip() {
   const showOtpInput = currentTrip.pickStatus === "dropped";
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
+    <div>
       {/* ================= ACTIVE OPERATIONS HEADER ================= */}
       <div className="px-0 sm:px-6 mb-8 pt-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
