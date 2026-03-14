@@ -198,7 +198,7 @@ export default function PendingBooking() {
       </div>
 
       {/* ================= MOBILE / TABLET CARDS ================= */}
-      <div className="lg:hidden space-y-4">
+      {/* <div className="lg:hidden space-y-4">
         {bookings.map((booking) => {
           const driverQuote = getDriverQuote(booking);
           return (
@@ -261,6 +261,128 @@ export default function PendingBooking() {
                   }}
                 >
                   {driverQuote ? "Update Offer" : "Send Offer"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div> */}
+      {/* ================= MOBILE / TABLET CARDS ================= */}
+      <div className="lg:hidden space-y-4 px-2">
+        {bookings.map((booking) => {
+          const driverQuote = getDriverQuote(booking);
+
+          return (
+            <div
+              key={booking._id}
+              className="relative overflow-hidden bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all p-5"
+            >
+              {/* Top Header: Name and Status */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold">
+                    {booking.userId?.name?.charAt(0) || "U"}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 leading-none">
+                      {booking.userId?.name}
+                    </h4>
+                    <span className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
+                      {booking.vehicleType} •{" "}
+                      {booking.tripType.replace("_", " ")}
+                    </span>
+                  </div>
+                </div>
+
+                <span
+                  className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-tighter ${
+                    driverQuote
+                      ? "bg-green-50 text-green-600"
+                      : "bg-blue-50 text-blue-600"
+                  }`}
+                >
+                  {driverQuote?.status || "New Request"}
+                </span>
+              </div>
+
+              {/* Route visualization */}
+              <div className="relative pl-7 space-y-4 mb-5 before:content-[''] before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1.5px] before:bg-gray-100">
+                <div className="relative">
+                  <div className="absolute -left-[23px] top-1 w-3 h-3 rounded-full border-2 border-indigo-500 bg-white"></div>
+                  <p className="text-xs text-gray-500 font-medium truncate">
+                    {booking.fromLocation}
+                  </p>
+                </div>
+                <div className="relative">
+                  <div className="absolute -left-[23px] top-1 w-3 h-3 rounded-full border-2 border-red-400 bg-white"></div>
+                  <p className="text-xs text-gray-500 font-medium truncate">
+                    {booking.toLocation}
+                  </p>
+                </div>
+              </div>
+
+              {/* Date and Time Row */}
+              <div className="flex items-center gap-4 py-3 border-t border-b border-gray-50 mb-5">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-xs text-gray-600 font-semibold">
+                    {new Date(booking.dateFrom).toLocaleDateString(undefined, {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-xs text-gray-600 font-semibold">
+                    {formatTime12Hour(booking.timeFrom)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Footer: Price and Action */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase">
+                    My Bid
+                  </p>
+                  <div className="flex items-baseline gap-1">
+                    {driverQuote ? (
+                      <>
+                        <span className="text-lg font-black text-indigo-600">
+                          {driverQuote.currentAmount}
+                        </span>
+                        <span className="text-[10px] font-bold text-gray-400">
+                          TK
+                        </span>
+                        {driverQuote.previousAmount > 0 && (
+                          <span className="text-xs text-gray-300 line-through ml-1">
+                            {driverQuote.previousAmount}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-sm font-bold text-gray-300 italic">
+                        No offer yet
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => {
+                    setSelectedBooking(booking);
+                    setOfferModalOpen(true);
+                    setAmount(driverQuote?.currentAmount || "");
+                  }}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all active:scale-95 ${
+                    driverQuote
+                      ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      : "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
+                  }`}
+                >
+                  {driverQuote ? "Edit Bid" : "Send Bid"}
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
