@@ -320,7 +320,6 @@ import {
   FiPhone,
   FiTruck,
   FiUser,
-  FiShieldLock,
 } from "react-icons/fi";
 // import {
 //   FiActivity,
@@ -702,7 +701,7 @@ export default function CurrentTrip() {
                   onClick={() => mutationVerifyOtp.mutate()}
                   className="w-full bg-indigo-500 hover:bg-indigo-600 text-white h-14 rounded-2xl font-black uppercase tracking-widest transition-all shadow-lg shadow-indigo-900/20 flex items-center justify-center gap-2"
                 >
-                  <FiShieldLock size={20} /> Verify & Close
+                  Verify & Close
                 </button>
               </div>
             ) : null}
