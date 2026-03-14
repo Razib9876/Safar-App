@@ -25,7 +25,7 @@ const BookingManagement = () => {
           className="tab"
           aria-label="All Bookings"
         />
-        <div className="tab-content bg-base-100 border-base-300 border-r-0 border-b-0 p-6 ">
+        <div className="tab-content bg-base-100 border-base-300 pt-6 px-0 pb-0 sm:p-6">
           <AdminLogisticsMaster></AdminLogisticsMaster>
         </div>
 
