@@ -150,7 +150,7 @@ export default function AdminLogisticsMaster() {
     );
 
   return (
-    <div className="p-4 sm:p-6 mx-auto bg-[#f8fafc] min-h-screen font-sans text-slate-900">
+    <div className="max-w-4xl  p-4 sm:p-6 mx-auto bg-[#f8fafc] min-h-screen font-sans text-slate-900">
       {/* Header & Filters */}
       <div className="px-0 sm:px-6 mb-10">
         <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-8">
