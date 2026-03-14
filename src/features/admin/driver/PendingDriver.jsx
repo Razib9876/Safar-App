@@ -81,7 +81,7 @@ export default function PendingDriver() {
     );
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-20 p-2 sm:px-2 lg:px-3">
+    <div>
       {/* ================= INDUSTRIAL HEADER ================= */}
       <div className="mb-8 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
         <div className="flex items-center gap-4">

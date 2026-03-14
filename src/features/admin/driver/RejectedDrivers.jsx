@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { FiMoreVertical, FiCheckCircle } from "react-icons/fi";
-import axiosSecure from "../../../services/axiosSecure"; 
+import axiosSecure from "../../../services/axiosSecure";
 
 // ================= FETCH REJECTED DRIVERS =================
 const fetchRejectedDrivers = async () => {
@@ -54,7 +54,7 @@ export default function RejectedDriver() {
     );
 
   return (
-    <div className="p-6">
+    <div>
       <h1 className="text-2xl font-bold mb-6">Rejected Drivers</h1>
 
       {/* ================= DESKTOP TABLE ================= */}
