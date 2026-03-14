@@ -33,7 +33,7 @@ const paymentMethods = [
   {
     id: "bkash",
     name: "bKash",
-    logo: "https://p7.hiclipart.com/preview/521/113/611/bkash-payment-gateway-mobile-payment-service-others.jpg",
+    logo: "src/assets/bkash.jpg",
   },
   {
     id: "nagad",
@@ -43,7 +43,7 @@ const paymentMethods = [
   {
     id: "rocket",
     name: "Rocket",
-    logo: "https://www.logotypes101.com/logos/824/6B6B567A868B3666D9227C0105D17E0E/Rocket.png",
+    logo: "src/assets/rocket.jpg",
   },
   {
     id: "visa",

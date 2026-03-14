@@ -620,7 +620,7 @@ export default function AdminLogisticsMaster() {
                     Revenue
                   </p>
                   <p className="text-xs font-black">
-                    ${selectedBooking.totalAmount}
+                    ${selectedBooking.totalAmount * 0.05}
                   </p>
                 </div>
               </div>

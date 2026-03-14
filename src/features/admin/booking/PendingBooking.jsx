@@ -21,6 +21,7 @@ import {
   FiZap,
   FiInbox,
 } from "react-icons/fi";
+import Loading from "../../../components/Loading";
 
 // Note: Ensure axiosSecure is defined or replace with your axios instance
 const axiosSecure = axios.create({ baseURL: import.meta.env.VITE_API_URL });
@@ -100,8 +101,7 @@ export default function AdminBookings() {
       d.phoneNumber.includes(searchDriver),
   );
 
-  if (isLoading)
-    return <div className="p-6 text-center font-bold">Loading bookings...</div>;
+  if (isLoading) return <Loading></Loading>;
 
   return (
     <div>

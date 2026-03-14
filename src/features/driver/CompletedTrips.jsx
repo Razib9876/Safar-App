@@ -12,6 +12,7 @@ import {
   Search,
   History,
 } from "lucide-react";
+import { FiArchive, FiCheckCircle } from "react-icons/fi";
 
 export default function CompletedTrips() {
   const [driverId, setDriverId] = useState(null);
