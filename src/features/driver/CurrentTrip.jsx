@@ -320,6 +320,7 @@ import {
   FiPhone,
   FiTruck,
   FiUser,
+  FiShieldLock,
 } from "react-icons/fi";
 // import {
 //   FiActivity,
