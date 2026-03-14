@@ -185,24 +185,12 @@ export default function AdminLogisticsMaster() {
         <table className="min-w-full text-sm">
           <thead className="bg-slate-50 border-b border-slate-200">
             <tr>
-              <th className="p-5 font-bold text-slate-500 text-left uppercase tracking-wider text-[11px]">
-                Route
-              </th>
-              <th className="p-5 font-bold text-slate-500 text-left uppercase tracking-wider text-[11px]">
-                Client
-              </th>
-              <th className="p-5 font-bold text-slate-500 text-left uppercase tracking-wider text-[11px]">
-                Asset
-              </th>
-              <th className="p-5 font-bold text-slate-500 text-left uppercase tracking-wider text-[11px]">
-                Driver
-              </th>
-              <th className="p-5 font-bold text-slate-500 text-left uppercase tracking-wider text-[11px]">
-                Financials
-              </th>
-              <th className="p-5 text-right font-bold text-slate-500 uppercase tracking-wider text-[11px]">
-                Status
-              </th>
+              <th className="p-3">Route</th>
+              <th className="p-3">Client</th>
+              <th className="p-3">Asset</th>
+              <th className="p-3">Driver</th>
+              <th className="p-3">Financials</th>
+              <th className="p-3">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
