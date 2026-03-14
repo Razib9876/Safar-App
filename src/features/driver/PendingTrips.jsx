@@ -225,7 +225,7 @@ export default function PendingBooking() {
                   </td>
                   <td className="p-3 text-right">
                     <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded"
+                      className="bg-orange-500 text-white hover:bg-orange-600  px-4 py-2 rounded"
                       onClick={() => {
                         setSelectedBooking(booking);
                         setOfferModalOpen(true);
@@ -550,7 +550,7 @@ export default function PendingBooking() {
               </button>
 
               <button
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-md active:scale-95"
+                className="bg-orange-500 text-white hover:bg-orange-600  px-6 py-2 rounded-lg font-medium transition-colors shadow-md active:scale-95"
                 onClick={handleSendOffer}
               >
                 {getDriverQuote(selectedBooking)

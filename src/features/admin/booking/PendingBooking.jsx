@@ -134,84 +134,113 @@ export default function AdminBookings() {
       </div>
       {/* ================= DESKTOP TABLE ================= */}
       <div className="hidden lg:block overflow-x-auto bg-white shadow-sm rounded-xl border border-gray-200">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 text-left">
-            <tr>
-              <th className="p-4 font-bold text-gray-600">User</th>
-              <th className="p-4 font-bold text-gray-600">Trip</th>
-              <th className="p-4 font-bold text-gray-600">Vehicle</th>
-              <th className="p-4 font-bold text-gray-600">Route</th>
-              <th className="p-4 font-bold text-gray-600">Status</th>
-              <th className="p-4 text-right font-bold text-gray-600">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr
-                key={booking._id}
-                className="border-t hover:bg-blue-50/30 cursor-pointer"
-                onClick={() => setSelectedBooking(booking)}
-              >
-                <td className="p-4">
-                  <div className="font-bold">{booking.userId?.name}</div>
-                  <div className="text-gray-500 text-xs">
-                    {booking.userId?.email}
-                  </div>
-                </td>
-                <td className="p-4 capitalize">
-                  {booking.tripType?.replace("_", " ")}
-                </td>
-                <td className="p-4 uppercase font-bold text-blue-600">
-                  {booking.vehicleType}
-                </td>
-                <td className="p-4">
-                  {booking.fromLocation} → {booking.toLocation}
-                </td>
-                <td className="p-4">
-                  <span className="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-yellow-100 text-yellow-700">
-                    {booking.status}
-                  </span>
-                </td>
-                <td
-                  className="p-4 text-right relative"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    onClick={() =>
-                      setOpenDropdown(
-                        openDropdown === booking._id ? null : booking._id,
-                      )
-                    }
-                  >
-                    <FiMoreVertical />
-                  </button>
-                  {openDropdown === booking._id && (
-                    <div className="absolute right-4 mt-2 w-44 bg-white shadow-2xl rounded-xl z-50 border py-2">
-                      <button
-                        className="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 w-full text-sm font-semibold"
-                        onClick={() => handleAction("Public", booking)}
-                      >
-                        <FiEye className="text-blue-600" /> Public
-                      </button>
-                      <button
-                        className="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 w-full text-sm font-semibold"
-                        onClick={() => handleAction("Private", booking)}
-                      >
-                        <FiLock className="text-slate-600" /> Private
-                      </button>
-                      <button
-                        className="flex items-center gap-3 px-4 py-2 hover:bg-red-50 text-red-600 w-full text-sm font-bold"
-                        onClick={() => handleAction("Cancel", booking)}
-                      >
-                        <FiXCircle /> Cancel
-                      </button>
-                    </div>
-                  )}
-                </td>
+        {bookings.length > 0 ? (
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-100 text-left">
+              <tr>
+                <th className="p-4 font-bold text-gray-600">User</th>
+                <th className="p-4 font-bold text-gray-600">Trip</th>
+                <th className="p-4 font-bold text-gray-600">Vehicle</th>
+                <th className="p-4 font-bold text-gray-600">Route</th>
+                <th className="p-4 font-bold text-gray-600">Status</th>
+                <th className="p-4 text-right font-bold text-gray-600">
+                  Action
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => (
+                <tr
+                  key={booking._id}
+                  className="border-t hover:bg-blue-50/30 cursor-pointer"
+                  onClick={() => setSelectedBooking(booking)}
+                >
+                  <td className="p-4">
+                    <div className="font-bold">{booking.userId?.name}</div>
+                    <div className="text-gray-500 text-xs">
+                      {booking.userId?.email}
+                    </div>
+                  </td>
+                  <td className="p-4 capitalize">
+                    {booking.tripType?.replace("_", " ")}
+                  </td>
+                  <td className="p-4 uppercase font-bold text-blue-600">
+                    {booking.vehicleType}
+                  </td>
+                  <td className="p-4">
+                    {booking.fromLocation} → {booking.toLocation}
+                  </td>
+                  <td className="p-4">
+                    <span className="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-yellow-100 text-yellow-700">
+                      {booking.status}
+                    </span>
+                  </td>
+                  <td
+                    className="p-4 text-right relative"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() =>
+                        setOpenDropdown(
+                          openDropdown === booking._id ? null : booking._id,
+                        )
+                      }
+                    >
+                      <FiMoreVertical />
+                    </button>
+                    {openDropdown === booking._id && (
+                      <div className="absolute right-4 mt-2 w-44 bg-white shadow-2xl rounded-xl z-50 border py-2">
+                        <button
+                          className="flex items-center gap-3 px-4 py-2 hover:bg-blue-50 w-full text-sm font-semibold"
+                          onClick={() => handleAction("Public", booking)}
+                        >
+                          <FiEye className="text-blue-600" /> Public
+                        </button>
+                        <button
+                          className="flex items-center gap-3 px-4 py-2 hover:bg-slate-50 w-full text-sm font-semibold"
+                          onClick={() => handleAction("Private", booking)}
+                        >
+                          <FiLock className="text-slate-600" /> Private
+                        </button>
+                        <button
+                          className="flex items-center gap-3 px-4 py-2 hover:bg-red-50 text-red-600 w-full text-sm font-bold"
+                          onClick={() => handleAction("Cancel", booking)}
+                        >
+                          <FiXCircle /> Cancel
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          /* ================= ATTRACTIVE EMPTY STATE ================= */
+          <div className="py-20 flex flex-col items-center justify-center text-center">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-25"></div>
+              <div className="relative w-20 h-20 bg-slate-50 border-2 border-dashed border-slate-200 rounded-full flex items-center justify-center text-slate-300">
+                <FiInbox size={32} className="animate-bounce" />
+              </div>
+            </div>
+            <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tighter">
+              Queue <span className="text-orange-600">Clear</span>
+            </h3>
+            <p className="text-slate-400 text-xs font-mono mt-1 uppercase tracking-widest">
+              No_Pending_Logs_Detected
+            </p>
+            <div className="mt-6 inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900 rounded-full shadow-lg">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                Scanner_Active
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ================= MOBILE VIEW (REMOVED FOR BREVITY, SAME AS TABLE LOGIC) ================= */}
