@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import axiosSecure from "../../services/axiosSecure";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import Loading from "../../components/Loading";
 
 // 24-hour to 12-hour AM/PM
 const formatTime12Hour = (time24) => {
@@ -105,8 +106,7 @@ export default function PendingBooking() {
     ));
   };
 
-  if (authLoading || isLoading)
-    return <div className="p-6 text-center">Loading bookings...</div>;
+  if (authLoading || isLoading) return <Loading></Loading>;
 
   // ================= HELPER: GET DRIVER QUOTE =================
   const getDriverQuote = (booking) => {
@@ -267,7 +267,6 @@ export default function PendingBooking() {
           );
         })}
       </div>
-
       {/* ================= FIXED MODAL ================= */}
       {offerModalOpen && selectedBooking && (
         <div
@@ -398,3 +397,9 @@ export default function PendingBooking() {
     </div>
   );
 }
+
+// _________________________________________________________________________________________________________________
+// _________________________________________________________________________________________________________________
+// _________________________________________________________________________________________________________________
+// _________________________________________________________________________________________________________________
+// _________________________________________________________________________________________________________________

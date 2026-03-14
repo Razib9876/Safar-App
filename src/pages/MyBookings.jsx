@@ -25,6 +25,8 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import { RefreshCw, Search, Inbox } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // ================= CONSTANTS =================
 const paymentMethods = [
@@ -83,7 +85,22 @@ export default function MyBookings() {
   }, []);
 
   // ================= FETCH BOOKINGS =================
-  const { data: bookings = [], isLoading } = useQuery({
+  // const { data: bookings = [], isLoading } = useQuery({
+  //   queryKey: ["my-bookings", userEmail],
+  //   enabled: !!userEmail,
+  //   queryFn: async () => {
+  //     const res = await axiosSecure.get(
+  //       `/bookings/by-email?email=${encodeURIComponent(userEmail)}`,
+  //     );
+  //     return res.data.data || [];
+  //   },
+  // });
+  // Update your fetch block
+  const {
+    data: bookings = [],
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ["my-bookings", userEmail],
     enabled: !!userEmail,
     queryFn: async () => {
@@ -93,8 +110,6 @@ export default function MyBookings() {
       return res.data.data || [];
     },
   });
-  console.log(bookings);
-
   // ================= MUTATIONS =================
   const cancelMutation = useMutation({
     mutationFn: (bookingId) =>
@@ -187,8 +202,8 @@ export default function MyBookings() {
 
   if (isLoading)
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="flex items-center justify-center mt-50">
+        <span className="loading loading-spinner text-neutral"></span>
       </div>
     );
 
@@ -267,6 +282,57 @@ export default function MyBookings() {
               ))}
             </tbody>
           </table>
+          {/* if no data */}
+          {bookings.length === 0 && (
+            <div className="py-10 flex flex-col items-center justify-center">
+              <div className="relative group">
+                {/* Animated Background Glow */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+
+                {/* Icon Container */}
+                <div className="relative bg-white p-6 rounded-full shadow-xl">
+                  <Calendar
+                    className="w-12 h-12 text-indigo-500"
+                    strokeWidth={1.5}
+                  />
+                  <div className="absolute -bottom-1 -right-1 bg-white p-1.5 rounded-full shadow-md">
+                    <Search className="w-4 h-4 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 text-center max-w-sm">
+                <h3 className="text-2xl font-bold text-gray-900 tracking-tight">
+                  No Bookings Yet
+                </h3>
+                <p className="mt-3 text-gray-500 leading-relaxed">
+                  It looks like your travel history is empty. Ready to start
+                  your next journey with us?
+                </p>
+              </div>
+
+              <div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
+                <Link to="/">
+                  <button className="bg-orange-500 text-white  hover:bg-orange-600 px-8 py-3 font-bold rounded-xl ">
+                    Plan a Trip
+                  </button>
+                </Link>
+
+                <button
+                  disabled={isFetching}
+                  onClick={() =>
+                    queryClient.invalidateQueries(["my-bookings", userEmail])
+                  }
+                  className="flex items-center justify-center gap-2 px-6 py-3 min-w-[140px] bg-white text-gray-600 font-semibold rounded-xl border border-gray-200 hover:bg-gray-50 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${isFetching ? "animate-spin text-indigo-500" : ""}`}
+                  />
+                  <span>{isFetching ? "Refreshing..." : "Refresh"}</span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* MOBILE LIST */}
@@ -298,6 +364,60 @@ export default function MyBookings() {
               </div>
             </div>
           ))}
+          {/* NO DATA MESSAGE */}
+          {bookings.length === 0 && (
+            <div className="py-8 px-4 flex flex-col items-center justify-center min-h-[60vh]">
+              <div className="relative group">
+                {/* Animated Background Glow - Sized down for mobile */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+
+                {/* Icon Container - Scaled for mobile (w-16 vs w-20) */}
+                <div className="relative bg-white p-5 rounded-3xl shadow-lg border border-gray-50">
+                  <Calendar
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-indigo-500"
+                    strokeWidth={1.5}
+                  />
+                  <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-sm border border-gray-100">
+                    <Search className="w-3 h-3 text-gray-400" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center max-w-[280px] sm:max-w-sm">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">
+                  No Bookings Yet
+                </h3>
+                <p className="mt-2 text-sm sm:text-base text-gray-500 leading-relaxed">
+                  Your travel history is empty. Ready to start your next
+                  journey?
+                </p>
+              </div>
+
+              {/* Button Group - Full width on mobile, side-by-side on desktop */}
+              <div className="mt-8 flex flex-col w-full sm:w-auto items-center gap-3">
+                <Link to="/" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto px-10 py-3.5 bg-indigo-600 text-white font-bold rounded-2xl shadow-md active:scale-[0.98] transition-all">
+                    Plan a Trip
+                  </button>
+                </Link>
+
+                <button
+                  disabled={isFetching}
+                  onClick={() =>
+                    queryClient.invalidateQueries(["my-bookings", userEmail])
+                  }
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-600 font-semibold rounded-2xl border border-gray-200 active:bg-gray-50 transition-all disabled:opacity-70"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 ${isFetching ? "animate-spin text-indigo-500" : ""}`}
+                  />
+                  <span className="text-sm font-bold uppercase tracking-wide">
+                    {isFetching ? "Refreshing..." : "Refresh"}
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

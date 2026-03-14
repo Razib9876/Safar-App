@@ -2,7 +2,7 @@ import React from "react";
 import Lottie from "lottie-react";
 import loaderAnimation from "../../assets/Loader.json";
 
-const Loader = () => {
+const PendingTripLoader = () => {
   return (
     <div style={styles.container}>
       <Lottie
@@ -23,4 +23,4 @@ const styles = {
   },
 };
 
-export default Loader;
+export default PendingTripLoader;

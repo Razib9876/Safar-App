@@ -1,14 +1,13 @@
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import Loader from "../components/common/Loader";
 import Navbar from "../components/Layout/Navbar";
 
 export default function DashboardLayout() {
   const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) return <Loader />;
+  if (loading) return;
 
   if (!user) {
     return (

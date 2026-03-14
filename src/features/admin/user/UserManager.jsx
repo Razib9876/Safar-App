@@ -12,7 +12,7 @@ const UserManager = () => {
 
   return (
     <div>
-      <div className="tabs tabs-lift">
+      <div className="tabs tabs-lift w-full max-w-full">
         {/* ================= PENDING ================= */}
         <input
           type="radio"

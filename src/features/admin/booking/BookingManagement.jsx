@@ -8,7 +8,7 @@ import RejectedBooking from "./RejectedBooking";
 const BookingManagement = () => {
   return (
     <div>
-      <div className="tabs tabs-lift">
+      <div className="tabs tabs-lift w-full max-w-full">
         <input
           type="radio"
           name="my_tabs_3"

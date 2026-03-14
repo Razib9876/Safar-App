@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function HeroPages({ name }) {
   return (
-    <section className="relative w-full h-[250px] md:h-[300px] flex items-center bg-gray-900">
+    <section className="relative w-full h-[200px] md:h-[200px] flex items-center bg-gray-900">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -14,7 +14,7 @@ function HeroPages({ name }) {
       <div className="absolute inset-0 bg-black/60"></div>
 
       {/* Content */}
-      <div className="relative max-w-[1300px] mx-auto px-6 w-full">
+      <div className="relative max-w-[1300px] mx-auto px-6 w-full pt-20">
         <div className="text-white">
           <h3 className="text-3xl md:text-4xl font-bold mb-3">{name}</h3>
 
