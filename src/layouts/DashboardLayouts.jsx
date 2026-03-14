@@ -538,7 +538,7 @@ import { Link, Outlet, useLocation, NavLink } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Navbar from "../components/Layout/Navbar";
 
-/* Sidebar Item Component */
+/* Sidebar Item */
 const SidebarItem = ({ to, icon, label, dataTip }) => {
   return (
     <li>
@@ -596,7 +596,7 @@ export default function DashboardLayout() {
       <>
         <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
-          <div className="text-center text-error">
+          <div className="text-error text-center">
             Unauthorized or session expired.
           </div>
         </div>
@@ -619,24 +619,25 @@ export default function DashboardLayout() {
         <div className="drawer-content flex flex-col">
           {/* SUB HEADER */}
           <nav className="navbar bg-base-200 border-b border-base-300 sticky top-16 z-10">
-            <div className="flex-none lg:hidden">
+            {/* DRAWER TOGGLE BUTTON */}
+            <div className="flex-none">
               <label
                 htmlFor="dashboard-drawer"
                 className="btn btn-square btn-ghost"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
+                  className="size-6"
                   fill="none"
+                  viewBox="0 0 24 24"
                   stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="w-6 h-6"
+                  strokeWidth="2"
                 >
-                  <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                  <path d="M9 4v16"></path>
-                  <path d="M14 10l2 2l-2 2"></path>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 </svg>
               </label>
             </div>
@@ -658,7 +659,6 @@ export default function DashboardLayout() {
 
           <div className="flex min-h-full flex-col bg-base-200 border-r border-base-300 is-drawer-close:w-16 is-drawer-open:w-64 transition-all duration-300">
             <ul className="menu w-full grow overflow-y-auto">
-              {/* HOMEPAGE */}
               {(user.role === "rider" ||
                 user.role === "admin" ||
                 user.role === "driver") && (
@@ -668,11 +668,11 @@ export default function DashboardLayout() {
                   icon={
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
+                      className="size-5"
                       fill="none"
                       stroke="currentColor"
-                      className="size-5"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
                     >
                       <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
                       <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1 -2 2H5a2 2 0 0 1 -2 -2z"></path>
@@ -681,7 +681,6 @@ export default function DashboardLayout() {
                 />
               )}
 
-              {/* ADMIN SECTION */}
               {user.role === "admin" && (
                 <>
                   <div className="divider text-xs uppercase font-bold opacity-60">
@@ -694,15 +693,15 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <circle cx="6" cy="6" r="2"></circle>
-                        <circle cx="18" cy="18" r="2"></circle>
-                        <path d="M8 6h4a4 4 0 0 1 4 4v4"></path>
+                        <circle cx="6" cy="6" r="2" />
+                        <circle cx="18" cy="18" r="2" />
+                        <path d="M8 6h4a4 4 0 0 1 4 4v4" />
                       </svg>
                     }
                   />
@@ -713,15 +712,15 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M3 21v-2a4 4 0 0 1 4-4h4"></path>
-                        <circle cx="18" cy="17" r="3"></circle>
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M3 21v-2a4 4 0 0 1 4-4h4" />
+                        <circle cx="18" cy="17" r="3" />
                       </svg>
                     }
                   />
@@ -732,94 +731,20 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
-                      >
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M3 21v-2a4 4 0 0 1 4-4h4"></path>
-                      </svg>
-                    }
-                  />
-
-                  <SidebarItem
-                    to="/dashboard"
-                    label="Revenue"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
                         strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path d="M12 1v22"></path>
-                        <path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H7"></path>
-                      </svg>
-                    }
-                  />
-
-                  <SidebarItem
-                    to="/dashboard"
-                    label="Edit"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="size-5"
                       >
-                        <path d="M12 20h9"></path>
-                        <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"></path>
-                      </svg>
-                    }
-                  />
-
-                  <SidebarItem
-                    to="/dashboard"
-                    label="Track Driver"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <path d="M12 21s-6-7-6-11a6 6 0 1112 0c0 4-6 11-6 11z"></path>
-                        <circle cx="12" cy="10" r="2"></circle>
-                      </svg>
-                    }
-                  />
-
-                  <SidebarItem
-                    to="/dashboard"
-                    label="All Vehicles"
-                    icon={
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        fill="none"
-                        stroke="currentColor"
-                        className="size-5"
-                      >
-                        <rect x="3" y="11" width="18" height="6" rx="2"></rect>
-                        <circle cx="7.5" cy="17.5" r="1.5"></circle>
-                        <circle cx="16.5" cy="17.5" r="1.5"></circle>
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M3 21v-2a4 4 0 0 1 4-4h4" />
                       </svg>
                     }
                   />
                 </>
               )}
 
-              {/* DRIVER SECTION */}
               {user.role === "driver" && (
                 <>
                   <div className="divider text-xs uppercase font-bold opacity-60">
@@ -832,15 +757,15 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <path d="M3 11l1-4h16l1 4"></path>
-                        <circle cx="7" cy="17" r="2"></circle>
-                        <circle cx="17" cy="17" r="2"></circle>
+                        <path d="M3 11l1-4h16l1 4" />
+                        <circle cx="7" cy="17" r="2" />
+                        <circle cx="17" cy="17" r="2" />
                       </svg>
                     }
                   />
@@ -851,14 +776,14 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <circle cx="17" cy="17" r="3"></circle>
-                        <circle cx="7" cy="7" r="3"></circle>
+                        <circle cx="17" cy="17" r="3" />
+                        <circle cx="7" cy="7" r="3" />
                       </svg>
                     }
                   />
@@ -869,15 +794,15 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <rect x="3" y="3" width="18" height="18"></rect>
-                        <line x1="12" y1="8" x2="12" y2="16"></line>
-                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                        <rect x="3" y="3" width="18" height="18" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
                       </svg>
                     }
                   />
@@ -889,24 +814,24 @@ export default function DashboardLayout() {
                       user.earnings > 1000 ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
+                          className="size-5"
                           fill="none"
                           stroke="currentColor"
-                          className="size-5"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
                         >
-                          <path d="M12 2L15 8H9L12 2Z"></path>
+                          <path d="M12 2L15 8H9L12 2Z" />
                         </svg>
                       ) : (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
+                          className="size-5"
                           fill="none"
                           stroke="currentColor"
-                          className="size-5"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
                         >
-                          <path d="M12 22L9 16H15L12 22Z"></path>
+                          <path d="M12 22L9 16H15L12 22Z" />
                         </svg>
                       )
                     }
@@ -914,7 +839,6 @@ export default function DashboardLayout() {
                 </>
               )}
 
-              {/* SHARED */}
               {(user.role === "rider" ||
                 user.role === "admin" ||
                 user.role === "driver") && (
@@ -929,14 +853,14 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M12 6v6l4 2"></path>
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
                       </svg>
                     }
                   />
@@ -947,14 +871,14 @@ export default function DashboardLayout() {
                     icon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
+                        className="size-5"
                         fill="none"
                         stroke="currentColor"
-                        className="size-5"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
                       >
-                        <circle cx="12" cy="8" r="4"></circle>
-                        <path d="M6 20v-2a6 6 0 0112 0v2"></path>
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M6 20v-2a6 6 0 0112 0v2" />
                       </svg>
                     }
                   />
