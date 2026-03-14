@@ -17,6 +17,7 @@ import {
   FiCheck,
   FiGlobe,
   FiUserPlus,
+  FiInbox,
 } from "react-icons/fi";
 import { toast } from "react-hot-toast"; // Assuming you use a toast library, otherwise use alert
 import Loading from "../../../components/Loading";
@@ -153,7 +154,7 @@ export default function AdminLogisticsMaster() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
-                Global <span className="text-orange-600">Fleet Manager</span>
+                All Bookings<span className="text-orange-600">Manage</span>
               </h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
                 Fleet_Overview • Syncing_{new Date().toLocaleDateString()}
@@ -180,93 +181,120 @@ export default function AdminLogisticsMaster() {
       </div>
       {/* ================= TABLE ================= */}
       <div className="hidden lg:block overflow-x-auto bg-white shadow rounded-xl">
-        <table className="min-w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th className="p-3">Route</th>
-              <th className="p-3">Client</th>
-              <th className="p-3">Asset</th>
-              <th className="p-3">Driver</th>
-              <th className="p-3">Financials</th>
-              <th className="p-3">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {filteredBookings.map((booking) => (
-              <tr
-                key={booking._id}
-                className="hover:bg-blue-50/50 transition-colors cursor-pointer group"
-                onClick={() => setSelectedBooking(booking)}
-              >
-                <td className="p-5">
-                  <div className="flex flex-col">
-                    <span className="font-bold text-slate-800">
-                      {booking.fromLocation?.split(",")[0]} →{" "}
-                      {booking.toLocation?.split(",")[0]}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      {booking.dateFrom
-                        ? new Date(booking.dateFrom).toLocaleDateString()
-                        : "N/A"}
-                    </span>
-                  </div>
-                </td>
-                <td className="p-5">
-                  <div className="font-bold text-slate-700">
-                    {booking.userId?.name || "Unknown"}
-                  </div>
-                  <div className="text-[10px] text-slate-400">
-                    {booking.phoneNumber}
-                  </div>
-                </td>
-                <td className="p-5">
-                  <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-black uppercase">
-                    {booking.vehicleType}
-                  </span>
-                </td>
-                <td className="p-5">
-                  {booking.driverId ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                      <span className="font-bold text-slate-700">
-                        {booking.driverId.name}
+        {bookings.length > 0 ? (
+          <table className="min-w-full text-sm">
+            <thead className="bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="p-3">Route</th>
+                <th className="p-3">Client</th>
+                <th className="p-3">Asset</th>
+                <th className="p-3">Driver</th>
+                <th className="p-3">Financials</th>
+                <th className="p-3">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredBookings.map((booking) => (
+                <tr
+                  key={booking._id}
+                  className="hover:bg-blue-50/50 transition-colors cursor-pointer group"
+                  onClick={() => setSelectedBooking(booking)}
+                >
+                  <td className="p-5">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-slate-800">
+                        {booking.fromLocation?.split(",")[0]} →{" "}
+                        {booking.toLocation?.split(",")[0]}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        {booking.dateFrom
+                          ? new Date(booking.dateFrom).toLocaleDateString()
+                          : "N/A"}
                       </span>
                     </div>
-                  ) : (
-                    <span className="text-slate-400 text-xs italic">
-                      Unassigned ({booking.driverQuote?.length || 0} Quotes)
+                  </td>
+                  <td className="p-5">
+                    <div className="font-bold text-slate-700">
+                      {booking.userId?.name || "Unknown"}
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      {booking.phoneNumber}
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-[10px] font-black uppercase">
+                      {booking.vehicleType}
                     </span>
-                  )}
-                </td>
-                <td className="p-5">
-                  <div className="font-black text-slate-800">
-                    ${booking.totalAmount || "0"}
-                  </div>
-                  <div
-                    className={`text-[9px] uppercase font-bold ${
-                      booking.paymentStatus === "paid"
-                        ? "text-green-600"
-                        : "text-amber-600"
-                    }`}
-                  >
-                    {booking.paymentStatus}
-                  </div>
-                </td>
-                <td className="p-5 text-right">
-                  <span
-                    className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
-                      booking.status === "confirmed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {booking.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="p-5">
+                    {booking.driverId ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                        <span className="font-bold text-slate-700">
+                          {booking.driverId.name}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-slate-400 text-xs italic">
+                        Unassigned ({booking.driverQuote?.length || 0} Quotes)
+                      </span>
+                    )}
+                  </td>
+                  <td className="p-5">
+                    <div className="font-black text-slate-800">
+                      ${booking.totalAmount || "0"}
+                    </div>
+                    <div
+                      className={`text-[9px] uppercase font-bold ${
+                        booking.paymentStatus === "paid"
+                          ? "text-green-600"
+                          : "text-amber-600"
+                      }`}
+                    >
+                      {booking.paymentStatus}
+                    </div>
+                  </td>
+                  <td className="p-5 text-right">
+                    <span
+                      className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
+                        booking.status === "confirmed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {booking.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          /* ================= ATTRACTIVE EMPTY STATE ================= */
+          <div className="py-20 flex flex-col items-center justify-center text-center">
+            <div className="relative mb-6">
+              <div className="absolute inset-0 bg-orange-100 rounded-full animate-ping opacity-25"></div>
+              <div className="relative w-20 h-20 bg-slate-50 border-2 border-dashed border-slate-200 rounded-full flex items-center justify-center text-slate-300">
+                <FiInbox size={32} className="animate-bounce" />
+              </div>
+            </div>
+            <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tighter">
+              Queue <span className="text-orange-600">Clear</span>
+            </h3>
+            <p className="text-slate-400 text-xs font-mono mt-1 uppercase tracking-widest">
+              No_Pending_Logs_Detected
+            </p>
+            <div className="mt-6 inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900 rounded-full shadow-lg">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">
+                Scanner_Active
+              </span>
+            </div>
+          </div>
+        )}
       </div>
       {/* ================= MOBILE CARDS (Hidden on Desktop) ================= */}
       <div className="grid grid-cols-1 gap-4 md:hidden">

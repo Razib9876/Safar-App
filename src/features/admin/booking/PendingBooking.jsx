@@ -115,7 +115,7 @@ export default function AdminBookings() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
-                Logistics <span className="text-orange-600">Control Tower</span>
+                Pending <span className="text-orange-600">Bookings</span>
               </h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
                 System_Status: Active • Tracking {bookings.length} Requests
