@@ -114,77 +114,113 @@ export default function PendingDriver() {
 
       {/* ================= DESKTOP TABLE ================= */}
       <div className="hidden lg:block overflow-hidden bg-white border-2 border-slate-100 rounded-[32px] shadow-sm">
-        <table className="min-w-full">
-          <thead>
-            <tr className="bg-slate-50 border-b-2 border-slate-100">
-              <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Operator
-              </th>
-              <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Vehicle_Unit
-              </th>
-              <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Credentials
-              </th>
-              <th className="p-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                Manifest
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {filteredDrivers.map((driver) => (
-              <tr
-                key={driver._id}
-                className="hover:bg-orange-50/20 transition-colors group"
-              >
-                <td className="p-5">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={driver.photo || "https://via.placeholder.com/40"}
-                      className="w-10 h-10 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all border border-slate-200"
-                      alt=""
-                    />
-                    <div>
-                      <div className="font-black text-slate-800 uppercase text-sm italic">
-                        {driver.name}
-                      </div>
-                      <div className="text-[10px] font-bold text-slate-400 uppercase">
-                        {driver.phoneNumber}
+        {filteredDrivers.length > 0 ? (
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-slate-50 border-b-2 border-slate-100">
+                <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Operator
+                </th>
+                <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Vehicle_Unit
+                </th>
+                <th className="p-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Credentials
+                </th>
+                <th className="p-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  Manifest
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredDrivers.map((driver) => (
+                <tr
+                  key={driver._id}
+                  className="hover:bg-orange-50/20 transition-colors group"
+                >
+                  <td className="p-5">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={driver.photo || "https://via.placeholder.com/40"}
+                        className="w-10 h-10 rounded-xl object-cover grayscale group-hover:grayscale-0 transition-all border border-slate-200"
+                        alt=""
+                      />
+                      <div>
+                        <div className="font-black text-slate-800 uppercase text-sm italic">
+                          {driver.name}
+                        </div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase">
+                          {driver.phoneNumber}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </td>
-                <td className="p-5">
-                  <div className="flex items-center gap-2">
-                    <span className="bg-orange-50 text-orange-600 text-[9px] font-black px-2 py-1 rounded uppercase border border-orange-100">
-                      {driver.activeVehicle?.type}
-                    </span>
-                    <span className="text-xs font-bold text-slate-600 uppercase tracking-tighter">
-                      {driver.activeVehicle?.model}
-                    </span>
-                  </div>
-                </td>
-                <td className="p-5">
-                  <div className="flex gap-2">
-                    <Badge label="NID" verified={driver.nid?.verified} />
-                    <Badge
-                      label="LICENSE"
-                      verified={driver.drivingLicense?.verified}
-                    />
-                  </div>
-                </td>
-                <td className="p-5 text-right">
-                  <button
-                    onClick={() => setSelectedDriver(driver)}
-                    className="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg active:scale-95"
-                  >
-                    View_Full_Data
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-orange-50 text-orange-600 text-[9px] font-black px-2 py-1 rounded uppercase border border-orange-100">
+                        {driver.activeVehicle?.type}
+                      </span>
+                      <span className="text-xs font-bold text-slate-600 uppercase tracking-tighter">
+                        {driver.activeVehicle?.model}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-5">
+                    <div className="flex gap-2">
+                      <Badge label="NID" verified={driver.nid?.verified} />
+                      <Badge
+                        label="LICENSE"
+                        verified={driver.drivingLicense?.verified}
+                      />
+                    </div>
+                  </td>
+                  <td className="p-5 text-right">
+                    <button
+                      onClick={() => setSelectedDriver(driver)}
+                      className="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg active:scale-95"
+                    >
+                      View_Full_Data
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          /* ================= DRIVER EMPTY STATE ================= */
+          <div className="py-24 flex flex-col items-center justify-center text-center">
+            <div className="relative mb-8">
+              {/* Radar concentric circles */}
+              <div className="absolute inset-0 scale-150 bg-slate-50 rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 scale-110 border border-slate-100 rounded-full animate-[ping_3s_linear_infinite]"></div>
+
+              <div className="relative w-20 h-20 bg-white rounded-2xl border-2 border-slate-100 shadow-xl flex items-center justify-center">
+                <FiSearch
+                  size={32}
+                  className="text-slate-200 animate-[bounce_2s_infinite]"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-slate-800 uppercase italic tracking-tighter">
+                Zero <span className="text-orange-600">Operators</span> Detected
+              </h3>
+              <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+                Signal_Search: No matches found in registry
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                /* reset filter logic here */
+              }}
+              className="mt-8 px-6 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black text-slate-400 uppercase tracking-widest hover:border-orange-200 hover:text-orange-600 transition-all"
+            >
+              Reset_Filters
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ================= MOBILE VIEW ================= */}
