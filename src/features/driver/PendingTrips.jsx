@@ -130,14 +130,14 @@ export default function PendingBooking() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
-                Available <span className="text-orange-600">Deployments</span>
+                Pending <span className="text-orange-600">Trips</span>
               </h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2 flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
-                System_Live • {bookings.length} New Requests Found
+                Trips • {bookings.length} New Requests Found
               </p>
             </div>
           </div>

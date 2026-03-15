@@ -69,10 +69,10 @@ export default function CompletedBookings() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-4xl font-black text-slate-900 uppercase tracking-tighter italic leading-none">
-                Dispatch <span className="text-orange-600">Archive</span>
+                Complete <span className="text-orange-600">Archive</span>
               </h1>
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">
-                Data_Verification • {bookings.length} Encrypted Records
+                Bookings • {bookings.length} Encrypted Records
               </p>
             </div>
           </div>
