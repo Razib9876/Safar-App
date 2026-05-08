@@ -32,7 +32,9 @@ const AuthLayout = () => {
       "
         >
           {/* LEFT SIDE */}
-          <LeftSide />
+          <Link to={"/"}>
+            <LeftSide />
+          </Link>
 
           {/* RIGHT SIDE */}
           <div className=" rounded-t-3xl md:rounded-none w-full md:w-1/2 bg-white px-4 md:px-6 py-6 relative overflow-hidden flex items-center justify-center ">
