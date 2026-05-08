@@ -6,7 +6,9 @@ const LeftSide = () => {
   return (
     <div className="w-full md:w-1/2 bg-[#1F2A44] p-6 md:p-10 flex flex-col justify-center text-white   items-center ">
       <div className="mb-8">
-        <SafarLogo />
+        <Link to={"/"}>
+          <SafarLogo />
+        </Link>
       </div>
     </div>
   );
