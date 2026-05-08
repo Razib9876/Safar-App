@@ -1,6 +1,7 @@
 import React from "react";
 import SocialLogin from "../../features/auth/SocialLogin";
 import SafarLogo from "../common/SafarLogo";
+import { Link } from "react-router-dom";
 
 const LeftSide = () => {
   return (
